@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PE Deal Analyzer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Variables ─────────────────────────────────── */
+    :root {
+      --navy:        #0F1B2D;
+      --navy-mid:    #162234;
+      --navy-light:  #1e2f47;
+      --gold:        #C9A84C;
+      --gold-hover:  #B8922E;
+      --gold-card:   #8B6914;
+      --white:       #FFFFFF;
+      --text-dark:   #111827;
+      --text-muted:  #6B7280;
+      --border-card: #F0F0F4;
+      --radius:      12px;
+      --radius-sm:   8px;
+      --shadow:      0 4px 24px rgba(0, 0, 0, 0.22);
+      --shadow-sm:   0 2px 8px rgba(0, 0, 0, 0.12);
+      --font-serif:  'DM Serif Display', Georgia, serif;
+      --font-sans:   'DM Sans', system-ui, sans-serif;
+      --transition:  200ms ease;
+    }
+
+    /* ── Reset ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; }
+    body {
+      font-family: var(--font-sans);
+      background: var(--navy);
+      color: var(--white);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--gold); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    button { font-family: var(--font-sans); cursor: pointer; }
+
+    /* ── Modal overlay ─────────────────────────────── */
+    #modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 1rem;
+    }
+    #modal-overlay[hidden] { display: none; }
+
+    #modal-box {
+      background: var(--navy-mid);
+      border: 1px solid rgba(201, 168, 76, 0.25);
+      border-radius: var(--radius);
+      padding: 2.5rem;
+      width: min(440px, 100%);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      box-shadow: var(--shadow);
+    }
+
+    #modal-box .modal-eyebrow {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    #modal-box h2 {
+      font-family: var(--font-serif);
+      font-size: 1.75rem;
+      line-height: 1.2;
+    }
+
+    #modal-box .modal-subtitle {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.6);
+      line-height: 1.6;
+    }
+
+    #modal-box label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.5);
+      margin-top: 0.25rem;
+    }
+
+    #key-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-sm);
+      color: var(--white);
+      font-family: var(--font-sans);
+      font-size: 0.95rem;
+      transition: border-color var(--transition);
+    }
+    #key-input::placeholder { color: rgba(255, 255, 255, 0.3); }
+    #key-input:focus { outline: none; border-color: var(--gold); }
+
+    #modal-error {
+      font-size: 0.82rem;
+      color: #f87171;
+      padding: 0.5rem 0.75rem;
+      background: rgba(248, 113, 113, 0.1);
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(248, 113, 113, 0.2);
+    }
+    #modal-error[hidden] { display: none; }
+
+    #modal-save-btn {
+      padding: 0.75rem 1.5rem;
+      background: var(--gold);
+      color: var(--navy);
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: background var(--transition), transform 60ms;
+    }
+    #modal-save-btn:hover  { background: var(--gold-hover); }
+    #modal-save-btn:active { transform: scale(0.97); }
+
+    #modal-box .modal-link {
+      font-size: 0.82rem;
+      color: rgba(255, 255, 255, 0.4);
+      text-align: center;
+    }
+    #modal-box .modal-link a { color: rgba(201, 168, 76, 0.8); }
+
+    /* ── App wrapper ───────────────────────────────── */
+    #app {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      padding: 4rem 1.25rem 3rem;
+    }
+
+    /* ── Header ────────────────────────────────────── */
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+      max-width: 600px;
+    }
+
+    header .eyebrow {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.875rem;
+      padding: 0.35rem 0.85rem;
+      border: 1px solid rgba(201, 168, 76, 0.3);
+      border-radius: 99px;
+    }
+
+    header h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(2rem, 5vw, 3rem);
+      line-height: 1.15;
+      margin-bottom: 0.875rem;
+      letter-spacing: -0.01em;
+    }
+
+    header p {
+      font-size: 1rem;
+      color: rgba(255, 255, 255, 0.55);
+      line-height: 1.65;
+    }
+
+    /* ── Main ──────────────────────────────────────── */
+    main {
+      width: min(760px, 100%);
+    }
+
+    /* ── Form ──────────────────────────────────────── */
+    #analyze-form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    #analyze-form > label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.45);
+    }
+
+    #input-row {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    #url-input {
+      flex: 1;
+      padding: 0.9rem 1.25rem;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius);
+      color: var(--white);
+      font-family: var(--font-sans);
+      font-size: 1rem;
+      transition: border-color var(--transition), background var(--transition);
+    }
+    #url-input::placeholder { color: rgba(255, 255, 255, 0.28); }
+    #url-input:focus {
+      outline: none;
+      border-color: var(--gold);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    #analyze-btn {
+      padding: 0.9rem 1.75rem;
+      background: var(--gold);
+      color: var(--navy);
+      border: none;
+      border-radius: var(--radius);
+      font-size: 0.95rem;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: background var(--transition), transform 60ms;
+      letter-spacing: 0.01em;
+    }
+    #analyze-btn:hover:not(:disabled)  { background: var(--gold-hover); }
+    #analyze-btn:active:not(:disabled) { transform: scale(0.97); }
+    #analyze-btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    #form-error {
+      font-size: 0.85rem;
+      color: #f87171;
+      padding: 0.6rem 0.9rem;
+      background: rgba(248, 113, 113, 0.08);
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(248, 113, 113, 0.18);
+      line-height: 1.5;
+      margin-top: 0.25rem;
+    }
+    #form-error[hidden] { display: none; }
+
+    /* ── Loading ───────────────────────────────────── */
+    #loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.25rem;
+      padding: 4rem 0;
+    }
+    #loading[hidden] { display: none; }
+
+    #spinner {
+      width: 42px;
+      height: 42px;
+      border: 3px solid rgba(201, 168, 76, 0.18);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.85s linear infinite;
+    }
+
+    #loading p {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.45);
+      letter-spacing: 0.02em;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Results grid ──────────────────────────────── */
+    #results {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.25rem;
+      margin-top: 2.75rem;
+    }
+    #results[hidden] { display: none; }
+
+    @media (max-width: 600px) {
+      #results { grid-template-columns: 1fr; }
+      #input-row { flex-direction: column; }
+    }
+
+    /* ── Cards ─────────────────────────────────────── */
+    .card {
+      background: var(--white);
+      color: var(--text-dark);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 420ms ease, transform 420ms ease;
+    }
+    .card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .card-title {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--gold-card);
+      margin-bottom: 0.875rem;
+    }
+
+    #card-industry h3 {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      line-height: 1.25;
+      color: var(--text-dark);
+    }
+
+    #card-snapshot p {
+      font-size: 0.925rem;
+      line-height: 1.7;
+      color: #374151;
+    }
+
+    /* ── Comparable list ───────────────────────────── */
+    .peer-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .peer-list li {
+      padding: 0.65rem 0;
+      border-top: 1px solid var(--border-card);
+    }
+    .peer-list li:first-child { border-top: none; padding-top: 0; }
+    .peer-list li:last-child  { padding-bottom: 0; }
+
+    .peer-name {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 0.2rem;
+    }
+    .peer-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* ── Expert list ───────────────────────────────── */
+    .expert-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .expert-list li {
+      padding: 0.75rem 0;
+      border-top: 1px solid var(--border-card);
+    }
+    .expert-list li:first-child { border-top: none; padding-top: 0; }
+    .expert-list li:last-child  { padding-bottom: 0; }
+
+    .expert-name {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 0.15rem;
+    }
+    .expert-role {
+      font-size: 0.78rem;
+      font-style: italic;
+      color: var(--text-muted);
+      margin-bottom: 0.3rem;
+      line-height: 1.4;
+    }
+    .expert-rel {
+      font-size: 0.8rem;
+      color: #4B5563;
+      line-height: 1.5;
+    }
+
+    /* ── Footer ────────────────────────────────────── */
+    footer {
+      margin-top: auto;
+      padding-top: 3rem;
+      padding-bottom: 1.5rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    #change-key-btn {
+      background: none;
+      border: none;
+      color: rgba(201, 168, 76, 0.6);
+      font-size: 0.8rem;
+      font-family: var(--font-sans);
+      padding: 0;
+      transition: color var(--transition);
+    }
+    #change-key-btn:hover { color: var(--gold); }
+  </style>
+</head>
+<body>
+
+  <!-- ── API Key Modal ─────────────────────────────── -->
+  <div id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div id="modal-box">
+      <span class="modal-eyebrow">Setup</span>
+      <h2 id="modal-title">PE Deal Analyzer</h2>
+      <p class="modal-subtitle">
+        Enter your Anthropic API key to get started. It's stored locally in your
+        browser and used only to call the Claude API directly.
+      </p>
+      <label for="key-input">Anthropic API Key</label>
+      <input
+        id="key-input"
+        type="password"
+        placeholder="sk-ant-api03-..."
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <p id="modal-error" role="alert" hidden></p>
+      <button id="modal-save-btn">Save &amp; Continue</button>
+      <p class="modal-link">
+        Don't have a key?
+        <a href="https://console.anthropic.com/" target="_blank" rel="noopener">
+          Get one at console.anthropic.com →
+        </a>
+      </p>
+    </div>
+  </div>
+
+  <!-- ── App ──────────────────────────────────────── -->
+  <div id="app">
+
+    <header>
+      <span class="eyebrow">Private Equity Intelligence</span>
+      <h1>Deal Analyzer</h1>
+      <p>
+        Paste a company's website and get an instant investment-grade briefing —
+        industry positioning, comparable companies, and relevant expert advisors.
+      </p>
+    </header>
+
+    <main>
+      <form id="analyze-form" novalidate>
+        <label for="url-input">Company website</label>
+        <div id="input-row">
+          <input
+            id="url-input"
+            type="url"
+            placeholder="https://example.com"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button id="analyze-btn" type="submit">Analyze</button>
+        </div>
+        <p id="form-error" role="alert" hidden></p>
+      </form>
+
+      <!-- Loading -->
+      <div id="loading" hidden aria-live="polite">
+        <div id="spinner" role="status" aria-label="Analyzing company…"></div>
+        <p>Researching company&hellip;</p>
+      </div>
+
+      <!-- Results -->
+      <section id="results" hidden aria-live="polite">
+        <div id="card-industry"    class="card"></div>
+        <div id="card-snapshot"    class="card"></div>
+        <div id="card-comparables" class="card"></div>
+        <div id="card-experts"     class="card"></div>
+      </section>
+    </main>
+
+    <footer>
+      <button id="change-key-btn">Change API key</button>
+    </footer>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+      /* ── Constants ─────────────────────────────── */
+      var API_URL    = 'https://api.anthropic.com/v1/messages';
+      var MODEL      = 'claude-sonnet-4-20250514';
+      var MAX_TOKENS = 4000;
+      var LS_KEY     = 'pe_anthropic_key';
+
+      var SYSTEM_PROMPT = [
+        'You are an expert private equity research analyst. When given a company website URL, you will:',
+        '1. Use web_search to research the company thoroughly — its product, market, business model, size, and competitive landscape',
+        '2. Return ONLY a valid JSON object with this exact structure (no markdown fences, no surrounding text):',
+        '{',
+        '  "industry": "<short label, e.g. B2B SaaS / HR Tech>",',
+        '  "snapshot": "<3-4 sentence investment-grade description of business model, market position, size, and traction>",',
+        '  "comparables": [',
+        '    {"name": "<company name>", "description": "<one sentence positioning>"},',
+        '    ... (4-6 companies)',
+        '  ],',
+        '  "experts": [',
+        '    {"name": "<full name>", "role": "<current title and affiliation>", "relevance": "<one sentence why they are relevant to a PE firm evaluating this space>"},',
+        '    ... (5-6 people)',
+        '  ]',
+        '}',
+        '',
+        'Experts should be real, named individuals — academics, ex-operators, industry consultants, or sector analysts — who could credibly advise a PE firm.',
+        'Do not include any text outside the JSON object. Do not use markdown code fences.'
+      ].join('\n');
+
+      /* ── DOM references ────────────────────────── */
+      var modalOverlay  = document.getElementById('modal-overlay');
+      var keyInput      = document.getElementById('key-input');
+      var modalSaveBtn  = document.getElementById('modal-save-btn');
+      var modalError    = document.getElementById('modal-error');
+      var analyzeForm   = document.getElementById('analyze-form');
+      var urlInput      = document.getElementById('url-input');
+      var analyzeBtn    = document.getElementById('analyze-btn');
+      var formError     = document.getElementById('form-error');
+      var loadingEl     = document.getElementById('loading');
+      var resultsEl     = document.getElementById('results');
+      var changeKeyBtn  = document.getElementById('change-key-btn');
+
+      /* ── Init ──────────────────────────────────── */
+      function init() {
+        var savedKey = localStorage.getItem(LS_KEY);
+        if (!savedKey) {
+          showModal();
+        }
+        modalSaveBtn.addEventListener('click', handleSaveKey);
+        keyInput.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') handleSaveKey();
+        });
+        analyzeForm.addEventListener('submit', handleSubmit);
+        changeKeyBtn.addEventListener('click', handleChangeKey);
+      }
+
+      /* ── Modal ─────────────────────────────────── */
+      function showModal() {
+        modalOverlay.removeAttribute('hidden');
+        setTimeout(function () { keyInput.focus(); }, 50);
+      }
+
+      function hideModal() {
+        modalOverlay.setAttribute('hidden', '');
+      }
+
+      function handleSaveKey() {
+        var key = keyInput.value.trim();
+        if (!key) {
+          showModalError('Please enter your Anthropic API key.');
+          return;
+        }
+        if (!key.startsWith('sk-ant-')) {
+          showModalError('Key should start with sk-ant-. Check console.anthropic.com.');
+          return;
+        }
+        localStorage.setItem(LS_KEY, key);
+        keyInput.value = '';
+        hideModalError();
+        hideModal();
+      }
+
+      function handleChangeKey() {
+        showModal();
+      }
+
+      function showModalError(msg) {
+        modalError.textContent = msg;
+        modalError.hidden = false;
+      }
+
+      function hideModalError() {
+        modalError.hidden = true;
+      }
+
+      /* ── Form submit ───────────────────────────── */
+      async function handleSubmit(e) {
+        e.preventDefault();
+
+        var url    = urlInput.value.trim();
+        var apiKey = localStorage.getItem(LS_KEY);
+
+        if (!url) {
+          showFormError('Please enter a company website URL.');
+          return;
+        }
+
+        if (!apiKey) {
+          showModal();
+          return;
+        }
+
+        setLoading(true);
+        hideFormError();
+        hideResults();
+
+        try {
+          var data   = await callClaude(url, apiKey);
+          var parsed = parseClaudeResponse(data);
+          renderResults(parsed);
+          showResults();
+          animateCards();
+        } catch (err) {
+          showFormError(err.message || 'Something went wrong. Please try again.');
+        } finally {
+          setLoading(false);
+        }
+      }
+
+      function setLoading(on) {
+        loadingEl.hidden = !on;
+        analyzeBtn.disabled = on;
+        analyzeBtn.textContent = on ? 'Analyzing\u2026' : 'Analyze';
+      }
+
+      /* ── API call ──────────────────────────────── */
+      async function callClaude(companyUrl, apiKey) {
+        var body = {
+          model:      MODEL,
+          max_tokens: MAX_TOKENS,
+          system:     SYSTEM_PROMPT,
+          tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+          messages: [{
+            role:    'user',
+            content: 'Analyze this company: ' + companyUrl + '\n\nResearch it thoroughly using web search, then return the structured JSON as instructed.'
+          }]
+        };
+
+        var res;
+        try {
+          res = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+              'x-api-key':        apiKey,
+              'anthropic-version': '2023-06-01',
+              'anthropic-beta':    'interleaved-thinking-2025-05-14',
+              'content-type':      'application/json'
+            },
+            body: JSON.stringify(body)
+          });
+        } catch (networkErr) {
+          throw new Error('Network error \u2014 check your internet connection and try again.');
+        }
+
+        if (!res.ok) {
+          var errBody = {};
+          try { errBody = await res.json(); } catch (_) {}
+          var apiMsg = (errBody && errBody.error && errBody.error.message) || '';
+          if (res.status === 401) {
+            throw new Error('Invalid API key. Click \u201cChange API key\u201d in the footer to update it.');
+          }
+          if (res.status === 429) {
+            throw new Error('Rate limit reached. Please wait a moment and try again.');
+          }
+          throw new Error(apiMsg || ('API error ' + res.status + '. Please try again.'));
+        }
+
+        return res.json();
+      }
+
+      /* ── Response parser ───────────────────────── */
+      function parseClaudeResponse(data) {
+        var content = data && data.content;
+        if (!Array.isArray(content) || content.length === 0) {
+          throw new Error('Unexpected API response format. Please try again.');
+        }
+
+        // Find the last text block — the final JSON answer
+        var lastTextBlock = null;
+        for (var i = 0; i < content.length; i++) {
+          if (content[i].type === 'text') {
+            lastTextBlock = content[i];
+          }
+        }
+
+        if (!lastTextBlock) {
+          throw new Error('No text response received from Claude. Please try again.');
+        }
+
+        var raw = lastTextBlock.text.trim();
+
+        // Layer 1: direct parse
+        var parsed = tryParse(raw);
+
+        // Layer 2: strip markdown code fences
+        if (!parsed) {
+          var fenceMatch = raw.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/);
+          if (fenceMatch) {
+            parsed = tryParse(fenceMatch[1].trim());
+          }
+        }
+
+        // Layer 3: extract first {...} JSON object via regex
+        if (!parsed) {
+          var objMatch = raw.match(/\{[\s\S]*\}/);
+          if (objMatch) {
+            parsed = tryParse(objMatch[0]);
+          }
+        }
+
+        if (!parsed) {
+          throw new Error('Could not parse Claude\u2019s response as JSON. Please try again.');
+        }
+
+        // Validate required shape
+        if (!parsed.industry || !parsed.snapshot ||
+            !Array.isArray(parsed.comparables) || !Array.isArray(parsed.experts)) {
+          throw new Error('Incomplete data returned by Claude. Please try again.');
+        }
+
+        return parsed;
+      }
+
+      function tryParse(str) {
+        try { return JSON.parse(str); } catch (_) { return null; }
+      }
+
+      /* ── Renderer ──────────────────────────────── */
+      function renderResults(data) {
+        // Card: Industry
+        document.getElementById('card-industry').innerHTML =
+          '<div class="card-title">Industry</div>' +
+          '<h3>' + escHtml(data.industry) + '</h3>';
+
+        // Card: Snapshot
+        document.getElementById('card-snapshot').innerHTML =
+          '<div class="card-title">Company Snapshot</div>' +
+          '<p>' + escHtml(data.snapshot) + '</p>';
+
+        // Card: Comparable companies
+        var compItems = data.comparables.map(function (c) {
+          return '<li>' +
+            '<div class="peer-name">' + escHtml(c.name) + '</div>' +
+            '<div class="peer-desc">' + escHtml(c.description) + '</div>' +
+            '</li>';
+        }).join('');
+        document.getElementById('card-comparables').innerHTML =
+          '<div class="card-title">Comparable Companies</div>' +
+          '<ul class="peer-list">' + compItems + '</ul>';
+
+        // Card: Experts
+        var expItems = data.experts.map(function (ex) {
+          return '<li>' +
+            '<div class="expert-name">' + escHtml(ex.name) + '</div>' +
+            '<div class="expert-role">' + escHtml(ex.role) + '</div>' +
+            '<div class="expert-rel">' + escHtml(ex.relevance) + '</div>' +
+            '</li>';
+        }).join('');
+        document.getElementById('card-experts').innerHTML =
+          '<div class="card-title">Suggested Experts</div>' +
+          '<ul class="expert-list">' + expItems + '</ul>';
+      }
+
+      function escHtml(str) {
+        return String(str)
+          .replace(/&/g,  '&amp;')
+          .replace(/</g,  '&lt;')
+          .replace(/>/g,  '&gt;')
+          .replace(/"/g,  '&quot;')
+          .replace(/'/g,  '&#39;');
+      }
+
+      /* ── Show / hide results ───────────────────── */
+      function showResults() {
+        resultsEl.hidden = false;
+      }
+
+      function hideResults() {
+        resultsEl.hidden = true;
+        document.querySelectorAll('.card').forEach(function (c) {
+          c.classList.remove('visible');
+        });
+      }
+
+      /* ── Staggered card animation ──────────────── */
+      function animateCards() {
+        var cards = document.querySelectorAll('.card');
+        cards.forEach(function (card, i) {
+          setTimeout(function () {
+            card.classList.add('visible');
+          }, i * 150);
+        });
+      }
+
+      /* ── Error helpers ─────────────────────────── */
+      function showFormError(msg) {
+        formError.textContent = msg;
+        formError.hidden = false;
+      }
+
+      function hideFormError() {
+        formError.hidden = true;
+      }
+
+      /* ── Boot ──────────────────────────────────── */
+      init();
+    });
+  </script>
+</body>
+</html>
