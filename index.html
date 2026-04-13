@@ -286,6 +286,7 @@
       color: var(--gold-card);
       margin-bottom: 0.875rem;
     }
+
     /* ── Sector tags ───────────────────────────────── */
     .sector-tags {
       display: flex;
@@ -336,13 +337,14 @@
       width: 90px;
     }
     .add-sector-input::placeholder { color: #A5B4FC; }
+
     #card-snapshot p {
       font-size: 0.925rem;
       line-height: 1.7;
       color: #374151;
     }
 
-    /* ── Comparable list ───────────────────────────── */
+    /* ── Peer list (shared by both comparable cards) ── */
     .peer-list { list-style: none; display: flex; flex-direction: column; gap: 0; }
     .peer-list li {
       display: flex;
@@ -414,12 +416,7 @@
     .add-comp-btn:hover { background: var(--navy-light); }
 
     /* ── Find Advisors CTA ─────────────────────────── */
-    #advisors-cta {
-      margin-top: 0.25rem;
-    }
-    #experts-section {
-      margin-top: 1.25rem;
-    }
+    #advisors-cta { margin-top: 0.25rem; }
     #advisors-cta[hidden] { display: none; }
     #find-advisors-btn {
       width: 100%;
@@ -437,21 +434,16 @@
     #find-advisors-btn:active:not(:disabled) { transform: scale(0.98); }
     #find-advisors-btn:disabled { opacity: 0.55; cursor: not-allowed; }
 
-    /* ── Expert list ───────────────────────────────── */
-    .bucket-section { margin-bottom: 1.25rem; }
-    .bucket-section:last-of-type { margin-bottom: 0; }
-
-    .bucket-heading {
-      font-size: 0.72rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--gold-card);
-      padding-bottom: 0.5rem;
-      margin-bottom: 0.25rem;
-      border-bottom: 2px solid #F0F0F4;
+    /* ── Experts section ───────────────────────────── */
+    #experts-section {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      margin-top: 1.25rem;
     }
+    #experts-section[hidden] { display: none; }
 
+    /* ── Expert list ───────────────────────────────── */
     .expert-list { list-style: none; display: flex; flex-direction: column; gap: 0; }
     .expert-entry {
       padding: 0.75rem 0;
@@ -459,7 +451,6 @@
     }
     .expert-entry:first-child { border-top: none; padding-top: 0.25rem; }
     .expert-entry:last-child  { padding-bottom: 0; }
-
     .expert-name {
       font-size: 0.9rem;
       font-weight: 600;
@@ -470,8 +461,24 @@
       font-size: 0.78rem;
       font-style: italic;
       color: var(--text-muted);
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.35rem;
       line-height: 1.4;
+    }
+    .expert-tenure {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 0.35rem;
+    }
+    .expert-comparable {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: #312E81;
+      background: #EEF2FF;
+      border: 1px solid #C7D2FE;
+      border-radius: 99px;
+      padding: 0.1rem 0.5rem;
+      margin-bottom: 0.35rem;
     }
     .expert-field {
       font-size: 0.8rem;
@@ -485,45 +492,6 @@
       color: #374151;
       margin-right: 0.25rem;
     }
-    .expert-angle { color: #6B7280; }
-
-    /* ── Top 3 ─────────────────────────────────────── */
-    .top3-section {
-      margin-top: 1.25rem;
-      padding-top: 1.25rem;
-      border-top: 2px solid #F0F0F4;
-    }
-    .top3-heading {
-      font-size: 0.72rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--gold-card);
-      margin-bottom: 0.75rem;
-    }
-    .top3-list { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
-    .top3-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.75rem;
-    }
-    .top3-rank {
-      flex-shrink: 0;
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: var(--navy);
-      color: var(--gold);
-      font-size: 0.72rem;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-top: 1px;
-    }
-    .top3-body { flex: 1; }
-    .top3-name { font-size: 0.85rem; font-weight: 600; color: var(--text-dark); }
-    .top3-rationale { font-size: 0.8rem; color: #6B7280; line-height: 1.5; margin-top: 0.1rem; }
 
     /* ── Footer ────────────────────────────────────── */
     footer {
@@ -563,10 +531,7 @@
       min-width: 280px;
     }
     #rate-toast[hidden] { display: none; }
-    #rate-toast-icon {
-      font-size: 1.4rem;
-      line-height: 1;
-    }
+    #rate-toast-icon { font-size: 1.4rem; line-height: 1; }
     #rate-toast-body { flex: 1; }
     #rate-toast-title {
       font-size: 0.82rem;
@@ -574,10 +539,7 @@
       color: var(--white);
       margin-bottom: 0.2rem;
     }
-    #rate-toast-sub {
-      font-size: 0.78rem;
-      color: rgba(255,255,255,0.5);
-    }
+    #rate-toast-sub { font-size: 0.78rem; color: rgba(255,255,255,0.5); }
     #rate-toast-countdown {
       font-family: var(--font-serif);
       font-size: 1.6rem;
@@ -615,7 +577,7 @@
       <p class="modal-link">
         Don't have a key?
         <a href="https://console.anthropic.com/" target="_blank" rel="noopener">
-          Get one at console.anthropic.com →
+          Get one at console.anthropic.com &rarr;
         </a>
       </p>
     </div>
@@ -629,7 +591,7 @@
       <h1>Sourcing Senior Advisors</h1>
       <p>
         Paste a company's website to get an industry snapshot and comparable
-        companies — then refine the list before sourcing senior advisors.
+        companies &mdash; then refine the list before sourcing senior advisors.
       </p>
     </header>
 
@@ -656,11 +618,12 @@
         <p id="loading-text">Researching company&hellip;</p>
       </div>
 
-      <!-- Step 1 results: industry, snapshot, comparables -->
+      <!-- Step 1 results: sectors, snapshot, direct competitors, broader comparables -->
       <section id="results" hidden aria-live="polite">
-        <div id="card-industry"    class="card"></div>
-        <div id="card-snapshot"    class="card"></div>
-        <div id="card-comparables" class="card"></div>
+        <div id="card-industry"            class="card"></div>
+        <div id="card-snapshot"            class="card"></div>
+        <div id="card-direct-competitors"  class="card"></div>
+        <div id="card-broader-comparables" class="card"></div>
       </section>
 
       <!-- Find Advisors CTA -->
@@ -668,9 +631,11 @@
         <button id="find-advisors-btn">Find Senior Advisors &rarr;</button>
       </div>
 
-      <!-- Step 2 result: experts -->
+      <!-- Step 2 results: 3 advisor cards -->
       <section id="experts-section" hidden aria-live="polite">
-        <div id="card-experts" class="card"></div>
+        <div id="card-current-execs"    class="card"></div>
+        <div id="card-former-employees" class="card"></div>
+        <div id="card-broader-experts"  class="card"></div>
       </section>
     </main>
 
@@ -682,12 +647,12 @@
 
   <!-- Rate limit countdown toast -->
   <div id="rate-toast" hidden role="status">
-    <div id="rate-toast-icon">⏳</div>
+    <div id="rate-toast-icon">&#x23F3;</div>
     <div id="rate-toast-body">
       <div id="rate-toast-title">Rate limit reached</div>
       <div id="rate-toast-sub">Ready to retry in</div>
     </div>
-    <div id="rate-toast-countdown">—</div>
+    <div id="rate-toast-countdown">&mdash;</div>
   </div>
 
   <script>
@@ -696,7 +661,7 @@
       /* ── Constants ─────────────────────────────── */
       var API_URL    = 'https://api.anthropic.com/v1/messages';
       var MODEL      = 'claude-sonnet-4-20250514';
-      var MAX_TOKENS = 4000;
+      var MAX_TOKENS = 5000;
       var LS_KEY     = 'pe_anthropic_key';
 
       /* ── System prompts ────────────────────────── */
@@ -707,58 +672,81 @@
         '{',
         '  "industry": "<short label, e.g. B2B SaaS / HR Tech>",',
         '  "snapshot": "<3-4 sentence investment-grade description of business model, market position, size, and traction>",',
-        '  "comparables": [',
-        '    {"name": "<company name>", "description": "<one sentence positioning>"},',
+        '  "direct_competitors": [',
+        '    {"name": "<company name>", "description": "<one sentence: how they compete head-to-head with the target>"},',
+        '    ...',
+        '  ],',
+        '  "broader_comparables": [',
+        '    {"name": "<company name>", "description": "<one sentence: similar in X but differs from target in Y dimension>"},',
         '    ...',
         '  ]',
         '}',
-        'Include 4-6 comparable companies. Do not include any text outside the JSON object.'
+        'Include 3-5 companies per list.',
+        'direct_competitors: companies doing the exact same thing, competing head-to-head for the same customers.',
+        'broader_comparables: companies with a similar business model or customer base that differ in at least one meaningful dimension (geography, vertical, delivery model, price point, etc.).',
+        'Descriptions must explain the relationship to the target company specifically.',
+        'Do not include any text outside the JSON object.'
       ].join('\n');
 
       var PROMPT_STEP2 = [
-        'You are an expert advisor sourcing analyst for a private equity firm. Your job is to identify high-quality human experts — current and former executives, operators, and industry insiders — who could advise the firm on a potential investment.',
+        'You are an expert advisor sourcing analyst for a private equity firm. Your job is to find real, named individuals who could advise the firm on a potential investment.',
         '',
-        'You will receive:',
-        '- Target company: the URL, industry vertical, and a brief snapshot of the business',
-        '- Comparable companies: a curated peer set the PE firm has already selected',
+        'You will receive: the target company URL, its sectors and snapshot, its direct competitors, and its broader comparable universe.',
         '',
-        'Use web_search throughout to find real, named individuals. Do not invent people.',
-        'If you cannot find someone for a bucket, say so and explain why.',
+        'Use web_search extensively to find real people. Do not invent names or roles.',
+        'If you cannot find verified individuals for a bucket, return an empty array for that bucket.',
         '',
-        'Search across three buckets:',
+        'Search across three buckets and return each as a separate array:',
         '',
-        'BUCKET A — Former executives of the target company',
-        'Search for ex-CEOs, ex-COOs, ex-CFOs, ex-VPs of Sales/Operations/Strategy who have left the company and are now available to be approached. For each: name, previous role and tenure at the target, current position.',
+        'BUCKET 1 — Current Executives at the Target Company',
+        'Find the current CEO, CRO, CFO, COO, CMO, and VP-level leaders at the target company.',
+        'For each: name, exact title, and tenure in this role (e.g. "4 years (since 2021)").',
         '',
-        'BUCKET B — Current and former executives of comparable companies',
-        'For each comparable, identify 2-3 senior operators (C-suite or VP level) with deep hands-on experience in the same business model. Prioritise people who have been through a PE ownership cycle, a sale process, or significant operational transformation.',
+        'BUCKET 2 — Former Senior Employees of the Target Company',
+        'Find ex-employees who have left the target and are now reachable externally.',
+        'Prioritise C-suite, VP, and Director-level profiles.',
+        'For each: name, most senior role held at the target, tenure at target (e.g. "2017–2022"), and current position.',
         '',
-        'BUCKET C — Adjacent experts',
-        'Sector-focused consultants with published work, former board members, industry analysts, academics with applied expertise, or advisors known to operate in PE-backed settings.',
+        'BUCKET 3 — Senior Experts from the Broader Comparable Universe',
+        'For each company in the broader comparable universe list, identify 1–2 current or former senior operators (C-suite or VP-level) with deep hands-on experience at that company.',
+        'Include which comparable company they are associated with.',
         '',
         'Return ONLY a valid JSON object (no markdown fences, no text outside the JSON):',
         '{',
-        '  "experts": [',
+        '  "current_executives": [',
         '    {',
-        '      "bucket": "A",',
         '      "name": "full name",',
-        '      "role": "current title and affiliation",',
-        '      "connection": "their specific connection to the target or a comparable",',
-        '      "relevance": "1-2 sentences: what knowledge or network do they bring?",',
-        '      "conversation_angle": "what would you ask them? e.g. unit economics, churn drivers, salesforce structure"',
+        '      "title": "exact title",',
+        '      "tenure": "4 years (since 2021)",',
+        '      "relevance": "1 sentence on what they know"',
         '    }',
         '  ],',
-        '  "top_3": [',
-        '    { "name": "full name", "rationale": "why contact this person first" }',
+        '  "former_employees": [',
+        '    {',
+        '      "name": "full name",',
+        '      "last_role": "most senior role at target company",',
+        '      "tenure_at_target": "2017–2022",',
+        '      "current_position": "current title and company",',
+        '      "relevance": "1 sentence on what they know"',
+        '    }',
+        '  ],',
+        '  "broader_experts": [',
+        '    {',
+        '      "name": "full name",',
+        '      "role": "current title and affiliation",',
+        '      "comparable_company": "which company in the broader comparable universe they are associated with",',
+        '      "relevance": "1 sentence on what they bring"',
+        '    }',
         '  ]',
         '}'
       ].join('\n');
 
       /* ── State ─────────────────────────────────── */
-      var comparables   = [];   // [{name, description}] — editable after step 1
-      var sectors       = [];   // string[] — editable after step 1
-      var currentUrl    = '';
-      var currentSnapshot  = '';
+      var directCompetitors  = [];  // [{name, description}]
+      var broaderComparables = [];  // [{name, description}]
+      var sectors            = [];  // string[]
+      var currentUrl         = '';
+      var currentSnapshot    = '';
 
       /* ── DOM references ────────────────────────── */
       var modalOverlay    = document.getElementById('modal-overlay');
@@ -806,21 +794,39 @@
           }
         });
 
-        // Event delegation for remove buttons and add form inside comparables card
-        document.getElementById('card-comparables').addEventListener('click', function (e) {
+        // Event delegation for direct competitors card
+        document.getElementById('card-direct-competitors').addEventListener('click', function (e) {
           if (e.target.classList.contains('peer-remove')) {
             var idx = parseInt(e.target.getAttribute('data-index'), 10);
-            comparables.splice(idx, 1);
-            renderComparables();
+            directCompetitors.splice(idx, 1);
+            renderDirectCompetitors();
           }
-          if (e.target.id === 'add-comp-btn') {
-            handleAddComparable();
+          if (e.target.id === 'add-direct-btn') {
+            handleAddDirect();
           }
         });
-        document.getElementById('card-comparables').addEventListener('keydown', function (e) {
-          if (e.key === 'Enter' && e.target.id === 'add-comp-input') {
+        document.getElementById('card-direct-competitors').addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' && e.target.id === 'add-direct-input') {
             e.preventDefault();
-            handleAddComparable();
+            handleAddDirect();
+          }
+        });
+
+        // Event delegation for broader comparables card
+        document.getElementById('card-broader-comparables').addEventListener('click', function (e) {
+          if (e.target.classList.contains('peer-remove')) {
+            var idx = parseInt(e.target.getAttribute('data-index'), 10);
+            broaderComparables.splice(idx, 1);
+            renderBroaderComparables();
+          }
+          if (e.target.id === 'add-broader-btn') {
+            handleAddBroader();
+          }
+        });
+        document.getElementById('card-broader-comparables').addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' && e.target.id === 'add-broader-input') {
+            e.preventDefault();
+            handleAddBroader();
           }
         });
       }
@@ -875,11 +881,12 @@
 
         try {
           var data   = await callClaude(PROMPT_STEP1, 'Analyze this company: ' + url, apiKey);
-          var parsed = parseResponse(data, ['industry', 'snapshot', 'comparables']);
+          var parsed = parseResponse(data, ['industry', 'snapshot', 'direct_competitors', 'broader_comparables']);
 
-          sectors         = parsed.industry.split(/[\/,]/).map(function (s) { return s.trim(); }).filter(Boolean);
-          currentSnapshot = parsed.snapshot;
-          comparables     = parsed.comparables.slice();
+          sectors            = parsed.industry.split(/[\/,]/).map(function (s) { return s.trim(); }).filter(Boolean);
+          currentSnapshot    = parsed.snapshot;
+          directCompetitors  = parsed.direct_competitors.slice();
+          broaderComparables = parsed.broader_comparables.slice();
 
           renderStep1(parsed);
         } catch (err) {
@@ -897,24 +904,32 @@
         setLoading(true, 'Sourcing senior advisors\u2026');
         hideFormError();
         expertsSectionEl.hidden = true;
-        document.getElementById('card-experts').classList.remove('visible');
+        ['card-current-execs', 'card-former-employees', 'card-broader-experts'].forEach(function (id) {
+          var el = document.getElementById(id);
+          if (el) el.classList.remove('visible');
+        });
 
         var userMsg = [
           'Target company: ' + currentUrl,
           'Sectors: ' + sectors.join(', '),
           'Snapshot: ' + currentSnapshot,
           '',
-          'Selected comparable companies:',
-          comparables.map(function (c) {
+          'Direct competitors:',
+          directCompetitors.map(function (c) {
             return '- ' + c.name + (c.description ? ': ' + c.description : '');
           }).join('\n'),
           '',
-          'Based on this peer set, identify 5-6 senior advisors as instructed.'
+          'Broader comparable universe:',
+          broaderComparables.map(function (c) {
+            return '- ' + c.name + (c.description ? ': ' + c.description : '');
+          }).join('\n'),
+          '',
+          'Please find: (1) current executives with tenure, (2) former senior employees, (3) senior experts from the broader comparable universe.'
         ].join('\n');
 
         try {
           var data   = await callClaude(PROMPT_STEP2, userMsg, apiKey);
-          var parsed = parseResponse(data, ['experts']);
+          var parsed = parseResponse(data, ['current_executives', 'former_employees', 'broader_experts']);
           renderStep2(parsed);
         } catch (err) {
           if (err.message !== '__ratelimit__') showFormError(err.message || 'Something went wrong. Please try again.');
@@ -932,12 +947,12 @@
           '<div class="card-title">Company Snapshot</div>' +
           '<p>' + escHtml(data.snapshot) + '</p>';
 
-        renderComparables();
+        renderDirectCompetitors();
+        renderBroaderComparables();
 
         resultsEl.hidden = false;
         advisorsCtaEl.hidden = false;
 
-        // Stagger cards
         var cards = resultsEl.querySelectorAll('.card');
         cards.forEach(function (card, i) {
           setTimeout(function () { card.classList.add('visible'); }, i * 150);
@@ -971,8 +986,8 @@
         if (newInput) newInput.focus();
       }
 
-      function renderComparables() {
-        var items = comparables.map(function (c, i) {
+      function renderPeerCard(items, cardId, title, inputId, btnId) {
+        var listItems = items.map(function (c, i) {
           return '<li>' +
             '<div class="peer-body">' +
               '<div class="peer-name">' + escHtml(c.name) + '</div>' +
@@ -982,82 +997,93 @@
           '</li>';
         }).join('');
 
-        document.getElementById('card-comparables').innerHTML =
-          '<div class="card-title">Comparable Companies</div>' +
-          '<ul class="peer-list">' + items + '</ul>' +
+        document.getElementById(cardId).innerHTML =
+          '<div class="card-title">' + title + '</div>' +
+          '<ul class="peer-list">' + listItems + '</ul>' +
           '<div class="add-comp-row">' +
-            '<input id="add-comp-input" class="add-comp-input" type="text" placeholder="Add a company\u2026" />' +
-            '<button id="add-comp-btn" class="add-comp-btn" type="button">Add</button>' +
+            '<input id="' + inputId + '" class="add-comp-input" type="text" placeholder="Add a company\u2026" />' +
+            '<button id="' + btnId + '" class="add-comp-btn" type="button">Add</button>' +
           '</div>';
       }
 
-      function handleAddComparable() {
-        var input = document.getElementById('add-comp-input');
+      function renderDirectCompetitors() {
+        renderPeerCard(directCompetitors, 'card-direct-competitors', 'Direct Competitors', 'add-direct-input', 'add-direct-btn');
+      }
+
+      function renderBroaderComparables() {
+        renderPeerCard(broaderComparables, 'card-broader-comparables', 'Broader Comparable Universe', 'add-broader-input', 'add-broader-btn');
+      }
+
+      function handleAddDirect() {
+        var input = document.getElementById('add-direct-input');
         var name  = input ? input.value.trim() : '';
         if (!name) return;
-        comparables.push({ name: name, description: '' });
-        renderComparables();
-        // Re-focus the new input
-        var newInput = document.getElementById('add-comp-input');
+        directCompetitors.push({ name: name, description: '' });
+        renderDirectCompetitors();
+        var newInput = document.getElementById('add-direct-input');
+        if (newInput) newInput.focus();
+      }
+
+      function handleAddBroader() {
+        var input = document.getElementById('add-broader-input');
+        var name  = input ? input.value.trim() : '';
+        if (!name) return;
+        broaderComparables.push({ name: name, description: '' });
+        renderBroaderComparables();
+        var newInput = document.getElementById('add-broader-input');
         if (newInput) newInput.focus();
       }
 
       function renderStep2(data) {
-        var bucketLabels = {
-          'A': 'Bucket A \u2014 Former Target Executives',
-          'B': 'Bucket B \u2014 Comparable Company Executives',
-          'C': 'Bucket C \u2014 Adjacent Experts'
-        };
-
-        // Group experts by bucket
-        var buckets = { A: [], B: [], C: [] };
-        (data.experts || []).forEach(function (ex) {
-          var b = (ex.bucket || 'C').toUpperCase();
-          if (!buckets[b]) buckets[b] = [];
-          buckets[b].push(ex);
-        });
-
-        function renderExpert(ex) {
+        // Card 1 — Current Executives
+        var execItems = (data.current_executives || []).map(function (ex) {
           return '<li class="expert-entry">' +
-            '<div class="expert-name">' + escHtml(ex.name) + '</div>' +
-            '<div class="expert-role">' + escHtml(ex.role) + '</div>' +
-            '<div class="expert-field"><span class="expert-label">Connection</span> ' + escHtml(ex.connection || '') + '</div>' +
-            '<div class="expert-field"><span class="expert-label">Why relevant</span> ' + escHtml(ex.relevance || '') + '</div>' +
-            '<div class="expert-field expert-angle"><span class="expert-label">Ask about</span> ' + escHtml(ex.conversation_angle || '') + '</div>' +
+            '<div class="expert-name">' + escHtml(ex.name || '') + '</div>' +
+            '<div class="expert-role">' + escHtml(ex.title || '') + '</div>' +
+            (ex.tenure ? '<div class="expert-tenure">' + escHtml(ex.tenure) + '</div>' : '') +
+            (ex.relevance ? '<div class="expert-field">' + escHtml(ex.relevance) + '</div>' : '') +
           '</li>';
-        }
-
-        var bucketsHtml = ['A', 'B', 'C'].map(function (key) {
-          var experts = buckets[key];
-          if (!experts || experts.length === 0) return '';
-          return '<div class="bucket-section">' +
-            '<div class="bucket-heading">' + bucketLabels[key] + '</div>' +
-            '<ul class="expert-list">' + experts.map(renderExpert).join('') + '</ul>' +
-          '</div>';
         }).join('');
+        document.getElementById('card-current-execs').innerHTML =
+          '<div class="card-title">Current Executives</div>' +
+          '<ul class="expert-list">' + execItems + '</ul>';
 
-        var top3Html = '';
-        if (data.top_3 && data.top_3.length) {
-          var top3Items = data.top_3.map(function (t, i) {
-            return '<li class="top3-item">' +
-              '<span class="top3-rank">' + (i + 1) + '</span>' +
-              '<div class="top3-body">' +
-                '<div class="top3-name">' + escHtml(t.name) + '</div>' +
-                '<div class="top3-rationale">' + escHtml(t.rationale) + '</div>' +
-              '</div>' +
-            '</li>';
-          }).join('');
-          top3Html = '<div class="top3-section">' +
-            '<div class="top3-heading">Top 3 Priorities</div>' +
-            '<ul class="top3-list">' + top3Items + '</ul>' +
-          '</div>';
-        }
+        // Card 2 — Former Employees
+        var formerItems = (data.former_employees || []).map(function (ex) {
+          return '<li class="expert-entry">' +
+            '<div class="expert-name">' + escHtml(ex.name || '') + '</div>' +
+            '<div class="expert-role">' +
+              escHtml(ex.last_role || '') +
+              (ex.tenure_at_target ? ' (' + escHtml(ex.tenure_at_target) + ')' : '') +
+            '</div>' +
+            (ex.current_position ? '<div class="expert-field"><span class="expert-label">Now:</span> ' + escHtml(ex.current_position) + '</div>' : '') +
+            (ex.relevance ? '<div class="expert-field">' + escHtml(ex.relevance) + '</div>' : '') +
+          '</li>';
+        }).join('');
+        document.getElementById('card-former-employees').innerHTML =
+          '<div class="card-title">Former Employees</div>' +
+          '<ul class="expert-list">' + formerItems + '</ul>';
 
-        var card = document.getElementById('card-experts');
-        card.innerHTML = '<div class="card-title">Senior Advisors</div>' + bucketsHtml + top3Html;
+        // Card 3 — Broader Universe Experts
+        var broaderItems = (data.broader_experts || []).map(function (ex) {
+          return '<li class="expert-entry">' +
+            '<div class="expert-name">' + escHtml(ex.name || '') + '</div>' +
+            (ex.comparable_company ? '<div class="expert-comparable">' + escHtml(ex.comparable_company) + '</div>' : '') +
+            '<div class="expert-role">' + escHtml(ex.role || '') + '</div>' +
+            (ex.relevance ? '<div class="expert-field">' + escHtml(ex.relevance) + '</div>' : '') +
+          '</li>';
+        }).join('');
+        document.getElementById('card-broader-experts').innerHTML =
+          '<div class="card-title">Broader Universe Experts</div>' +
+          '<ul class="expert-list">' + broaderItems + '</ul>';
 
         expertsSectionEl.hidden = false;
-        setTimeout(function () { card.classList.add('visible'); }, 50);
+        ['card-current-execs', 'card-former-employees', 'card-broader-experts'].forEach(function (id, i) {
+          setTimeout(function () {
+            var el = document.getElementById(id);
+            if (el) el.classList.add('visible');
+          }, 50 + i * 150);
+        });
         advisorsCtaEl.hidden = true;
       }
 
@@ -1067,9 +1093,13 @@
         advisorsCtaEl.hidden = true;
         expertsSectionEl.hidden = true;
         resultsEl.querySelectorAll('.card').forEach(function (c) { c.classList.remove('visible'); });
-        document.getElementById('card-experts').classList.remove('visible');
-        comparables = [];
-        sectors     = [];
+        ['card-current-execs', 'card-former-employees', 'card-broader-experts'].forEach(function (id) {
+          var el = document.getElementById(id);
+          if (el) el.classList.remove('visible');
+        });
+        directCompetitors  = [];
+        broaderComparables = [];
+        sectors            = [];
       }
 
       /* ── API call ──────────────────────────────── */
@@ -1143,7 +1173,7 @@
         if (!parsed) throw new Error('Could not parse Claude\u2019s response. Please try again.');
 
         for (var k = 0; k < requiredKeys.length; k++) {
-          if (!parsed[requiredKeys[k]]) {
+          if (parsed[requiredKeys[k]] === undefined || parsed[requiredKeys[k]] === null) {
             throw new Error('Incomplete response from Claude. Please try again.');
           }
         }
@@ -1169,7 +1199,6 @@
             clearInterval(_countdownTimer);
             _countdownTimer = null;
             toast.hidden = true;
-            // Re-enable buttons so the user can retry immediately
             analyzeBtn.disabled = false;
             findAdvisorsBtn.disabled = false;
             analyzeBtn.textContent = 'Analyze';
