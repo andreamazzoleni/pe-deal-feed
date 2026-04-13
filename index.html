@@ -291,15 +291,14 @@
 
     /* ── Results grid ──────────────────────────────── */
     #results {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      display: flex;
+      flex-direction: column;
       gap: 1.25rem;
       margin-top: 2.75rem;
     }
     #results[hidden] { display: none; }
 
     @media (max-width: 600px) {
-      #results { grid-template-columns: 1fr; }
       #input-row { flex-direction: column; }
     }
 
@@ -683,6 +682,7 @@
         if (!res.ok) {
           var errBody = {};
           try { errBody = await res.json(); } catch (_) {}
+          console.error('Anthropic API error', res.status, JSON.stringify(errBody, null, 2));
           var apiMsg = (errBody && errBody.error && errBody.error.message) || '';
           if (res.status === 401) {
             throw new Error('Invalid API key. Click \u201cChange API key\u201d in the footer to update it.');
@@ -791,6 +791,7 @@
 
       function escHtml(str) {
         return String(str)
+          .replace(/<cite[^>]*>|<\/cite>/gi, '')
           .replace(/&/g,  '&amp;')
           .replace(/</g,  '&lt;')
           .replace(/>/g,  '&gt;')
