@@ -23,7 +23,6 @@
       --radius:      12px;
       --radius-sm:   8px;
       --shadow:      0 4px 24px rgba(0, 0, 0, 0.22);
-      --shadow-sm:   0 2px 8px rgba(0, 0, 0, 0.12);
       --font-serif:  'DM Serif Display', Georgia, serif;
       --font-sans:   'DM Sans', system-ui, sans-serif;
       --transition:  200ms ease;
@@ -71,7 +70,6 @@
       gap: 1rem;
       box-shadow: var(--shadow);
     }
-
     #modal-box .modal-eyebrow {
       font-size: 0.7rem;
       font-weight: 600;
@@ -79,19 +77,16 @@
       text-transform: uppercase;
       color: var(--gold);
     }
-
     #modal-box h2 {
       font-family: var(--font-serif);
       font-size: 1.75rem;
       line-height: 1.2;
     }
-
     #modal-box .modal-subtitle {
       font-size: 0.9rem;
       color: rgba(255, 255, 255, 0.6);
       line-height: 1.6;
     }
-
     #modal-box label {
       font-size: 0.75rem;
       font-weight: 600;
@@ -100,7 +95,6 @@
       color: rgba(255, 255, 255, 0.5);
       margin-top: 0.25rem;
     }
-
     #key-input {
       width: 100%;
       padding: 0.75rem 1rem;
@@ -114,7 +108,6 @@
     }
     #key-input::placeholder { color: rgba(255, 255, 255, 0.3); }
     #key-input:focus { outline: none; border-color: var(--gold); }
-
     #modal-error {
       font-size: 0.82rem;
       color: #f87171;
@@ -124,7 +117,6 @@
       border: 1px solid rgba(248, 113, 113, 0.2);
     }
     #modal-error[hidden] { display: none; }
-
     #modal-save-btn {
       padding: 0.75rem 1.5rem;
       background: var(--gold);
@@ -137,7 +129,6 @@
     }
     #modal-save-btn:hover  { background: var(--gold-hover); }
     #modal-save-btn:active { transform: scale(0.97); }
-
     #modal-box .modal-link {
       font-size: 0.82rem;
       color: rgba(255, 255, 255, 0.4);
@@ -160,7 +151,6 @@
       margin-bottom: 3rem;
       max-width: 600px;
     }
-
     header .eyebrow {
       display: inline-block;
       font-size: 0.65rem;
@@ -173,7 +163,6 @@
       border: 1px solid rgba(201, 168, 76, 0.3);
       border-radius: 99px;
     }
-
     header h1 {
       font-family: var(--font-serif);
       font-size: clamp(2rem, 5vw, 3rem);
@@ -181,7 +170,6 @@
       margin-bottom: 0.875rem;
       letter-spacing: -0.01em;
     }
-
     header p {
       font-size: 1rem;
       color: rgba(255, 255, 255, 0.55);
@@ -189,17 +177,10 @@
     }
 
     /* ── Main ──────────────────────────────────────── */
-    main {
-      width: min(760px, 100%);
-    }
+    main { width: min(760px, 100%); }
 
     /* ── Form ──────────────────────────────────────── */
-    #analyze-form {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
+    #analyze-form { display: flex; flex-direction: column; gap: 0.5rem; }
     #analyze-form > label {
       font-size: 0.7rem;
       font-weight: 600;
@@ -207,12 +188,7 @@
       text-transform: uppercase;
       color: rgba(255, 255, 255, 0.45);
     }
-
-    #input-row {
-      display: flex;
-      gap: 0.75rem;
-    }
-
+    #input-row { display: flex; gap: 0.75rem; }
     #url-input {
       flex: 1;
       padding: 0.9rem 1.25rem;
@@ -230,7 +206,6 @@
       border-color: var(--gold);
       background: rgba(255, 255, 255, 0.08);
     }
-
     #analyze-btn {
       padding: 0.9rem 1.75rem;
       background: var(--gold);
@@ -245,11 +220,7 @@
     }
     #analyze-btn:hover:not(:disabled)  { background: var(--gold-hover); }
     #analyze-btn:active:not(:disabled) { transform: scale(0.97); }
-    #analyze-btn:disabled {
-      opacity: 0.55;
-      cursor: not-allowed;
-    }
-
+    #analyze-btn:disabled { opacity: 0.55; cursor: not-allowed; }
     #form-error {
       font-size: 0.85rem;
       color: #f87171;
@@ -271,7 +242,6 @@
       padding: 4rem 0;
     }
     #loading[hidden] { display: none; }
-
     #spinner {
       width: 42px;
       height: 42px;
@@ -280,16 +250,14 @@
       border-radius: 50%;
       animation: spin 0.85s linear infinite;
     }
-
     #loading p {
       font-size: 0.9rem;
       color: rgba(255, 255, 255, 0.45);
       letter-spacing: 0.02em;
     }
-
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── Results grid ──────────────────────────────── */
+    /* ── Results ───────────────────────────────────── */
     #results {
       display: flex;
       flex-direction: column;
@@ -297,10 +265,6 @@
       margin-top: 2.75rem;
     }
     #results[hidden] { display: none; }
-
-    @media (max-width: 600px) {
-      #input-row { flex-direction: column; }
-    }
 
     /* ── Cards ─────────────────────────────────────── */
     .card {
@@ -313,11 +277,7 @@
       transform: translateY(16px);
       transition: opacity 420ms ease, transform 420ms ease;
     }
-    .card.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
+    .card.visible { opacity: 1; transform: translateY(0); }
     .card-title {
       font-size: 0.65rem;
       font-weight: 600;
@@ -326,14 +286,12 @@
       color: var(--gold-card);
       margin-bottom: 0.875rem;
     }
-
     #card-industry h3 {
       font-family: var(--font-serif);
       font-size: 1.5rem;
       line-height: 1.25;
       color: var(--text-dark);
     }
-
     #card-snapshot p {
       font-size: 0.925rem;
       line-height: 1.7;
@@ -341,45 +299,105 @@
     }
 
     /* ── Comparable list ───────────────────────────── */
-    .peer-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-    }
+    .peer-list { list-style: none; display: flex; flex-direction: column; gap: 0; }
     .peer-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
       padding: 0.65rem 0;
       border-top: 1px solid var(--border-card);
     }
     .peer-list li:first-child { border-top: none; padding-top: 0; }
     .peer-list li:last-child  { padding-bottom: 0; }
-
+    .peer-body { flex: 1; min-width: 0; }
     .peer-name {
       font-size: 0.875rem;
       font-weight: 600;
       color: var(--text-dark);
       margin-bottom: 0.2rem;
     }
-    .peer-desc {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      line-height: 1.5;
+    .peer-desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; }
+    .peer-remove {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      border: none;
+      border-radius: 50%;
+      background: #F3F4F6;
+      color: #9CA3AF;
+      font-size: 0.9rem;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1px;
+      transition: background var(--transition), color var(--transition);
     }
+    .peer-remove:hover { background: #FEE2E2; color: #EF4444; }
+
+    /* ── Add comparable row ────────────────────────── */
+    .add-comp-row {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.875rem;
+      padding-top: 0.875rem;
+      border-top: 1px solid var(--border-card);
+    }
+    .add-comp-input {
+      flex: 1;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid #D1D5DB;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      color: var(--text-dark);
+      background: #F9FAFB;
+      transition: border-color var(--transition);
+    }
+    .add-comp-input::placeholder { color: #9CA3AF; }
+    .add-comp-input:focus { outline: none; border-color: var(--gold-card); }
+    .add-comp-btn {
+      padding: 0.5rem 0.9rem;
+      background: var(--navy);
+      color: var(--white);
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: background var(--transition);
+    }
+    .add-comp-btn:hover { background: var(--navy-light); }
+
+    /* ── Find Advisors CTA ─────────────────────────── */
+    #advisors-cta {
+      margin-top: 0.25rem;
+    }
+    #advisors-cta[hidden] { display: none; }
+    #find-advisors-btn {
+      width: 100%;
+      padding: 1rem 1.5rem;
+      background: var(--gold);
+      color: var(--navy);
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      transition: background var(--transition), transform 60ms;
+    }
+    #find-advisors-btn:hover:not(:disabled)  { background: var(--gold-hover); }
+    #find-advisors-btn:active:not(:disabled) { transform: scale(0.98); }
+    #find-advisors-btn:disabled { opacity: 0.55; cursor: not-allowed; }
 
     /* ── Expert list ───────────────────────────────── */
-    .expert-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-    }
+    .expert-list { list-style: none; display: flex; flex-direction: column; gap: 0; }
     .expert-list li {
       padding: 0.75rem 0;
       border-top: 1px solid var(--border-card);
     }
     .expert-list li:first-child { border-top: none; padding-top: 0; }
     .expert-list li:last-child  { padding-bottom: 0; }
-
     .expert-name {
       font-size: 0.875rem;
       font-weight: 600;
@@ -393,11 +411,7 @@
       margin-bottom: 0.3rem;
       line-height: 1.4;
     }
-    .expert-rel {
-      font-size: 0.8rem;
-      color: #4B5563;
-      line-height: 1.5;
-    }
+    .expert-rel { font-size: 0.8rem; color: #4B5563; line-height: 1.5; }
 
     /* ── Footer ────────────────────────────────────── */
     footer {
@@ -408,7 +422,6 @@
       font-size: 0.8rem;
       color: rgba(255, 255, 255, 0.3);
     }
-
     #change-key-btn {
       background: none;
       border: none;
@@ -419,6 +432,10 @@
       transition: color var(--transition);
     }
     #change-key-btn:hover { color: var(--gold); }
+
+    @media (max-width: 600px) {
+      #input-row { flex-direction: column; }
+    }
   </style>
 </head>
 <body>
@@ -458,12 +475,13 @@
       <span class="eyebrow">Private Equity Intelligence</span>
       <h1>Deal Analyzer</h1>
       <p>
-        Paste a company's website and get an instant investment-grade briefing —
-        industry positioning, comparable companies, and relevant expert advisors.
+        Paste a company's website to get an industry snapshot and comparable
+        companies — then refine the list before sourcing senior advisors.
       </p>
     </header>
 
     <main>
+      <!-- Step 1 form -->
       <form id="analyze-form" novalidate>
         <label for="url-input">Company website</label>
         <div id="input-row">
@@ -481,16 +499,25 @@
 
       <!-- Loading -->
       <div id="loading" hidden aria-live="polite">
-        <div id="spinner" role="status" aria-label="Analyzing company…"></div>
-        <p>Researching company&hellip;</p>
+        <div id="spinner" role="status"></div>
+        <p id="loading-text">Researching company&hellip;</p>
       </div>
 
-      <!-- Results -->
+      <!-- Step 1 results: industry, snapshot, comparables -->
       <section id="results" hidden aria-live="polite">
         <div id="card-industry"    class="card"></div>
         <div id="card-snapshot"    class="card"></div>
         <div id="card-comparables" class="card"></div>
-        <div id="card-experts"     class="card"></div>
+      </section>
+
+      <!-- Find Advisors CTA -->
+      <div id="advisors-cta" hidden>
+        <button id="find-advisors-btn">Find Senior Advisors &rarr;</button>
+      </div>
+
+      <!-- Step 2 result: experts -->
+      <section id="experts-section" hidden aria-live="polite">
+        <div id="card-experts" class="card"></div>
       </section>
     </main>
 
@@ -509,53 +536,89 @@
       var MAX_TOKENS = 4000;
       var LS_KEY     = 'pe_anthropic_key';
 
-      var SYSTEM_PROMPT = [
-        'You are an expert private equity research analyst. When given a company website URL, you will:',
-        '1. Use web_search to research the company thoroughly — its product, market, business model, size, and competitive landscape',
-        '2. Return ONLY a valid JSON object with this exact structure (no markdown fences, no surrounding text):',
+      /* ── System prompts ────────────────────────── */
+      var PROMPT_STEP1 = [
+        'You are an expert private equity research analyst. When given a company website URL:',
+        '1. Use web_search to research the company thoroughly — product, market, business model, size, and competitive landscape.',
+        '2. Return ONLY a valid JSON object with this exact structure (no markdown fences, no text outside the JSON):',
         '{',
         '  "industry": "<short label, e.g. B2B SaaS / HR Tech>",',
         '  "snapshot": "<3-4 sentence investment-grade description of business model, market position, size, and traction>",',
         '  "comparables": [',
         '    {"name": "<company name>", "description": "<one sentence positioning>"},',
-        '    ... (4-6 companies)',
-        '  ],',
-        '  "experts": [',
-        '    {"name": "<full name>", "role": "<current title and affiliation>", "relevance": "<one sentence why they are relevant to a PE firm evaluating this space>"},',
-        '    ... (5-6 people)',
+        '    ...',
         '  ]',
         '}',
-        '',
-        'Experts should be real, named individuals — academics, ex-operators, industry consultants, or sector analysts — who could credibly advise a PE firm.',
-        'Do not include any text outside the JSON object. Do not use markdown code fences.'
+        'Include 4-6 comparable companies. Do not include any text outside the JSON object.'
       ].join('\n');
 
+      var PROMPT_STEP2 = [
+        'You are an expert private equity research analyst sourcing senior advisors.',
+        'You will be given a target company, its industry, and a list of comparable companies that a PE firm has selected as the relevant peer set.',
+        'Use web_search to identify 5-6 real, named senior advisors — former C-suite operators, board members, or sector specialists — who have direct experience in this specific space.',
+        'Return ONLY a valid JSON object (no markdown fences, no text outside the JSON):',
+        '{',
+        '  "experts": [',
+        '    {"name": "<full name>", "role": "<current title and affiliation>", "relevance": "<one sentence tying their specific experience to this company and peer set>"},',
+        '    ...',
+        '  ]',
+        '}'
+      ].join('\n');
+
+      /* ── State ─────────────────────────────────── */
+      var comparables   = [];   // [{name, description}] — editable after step 1
+      var currentUrl    = '';
+      var currentIndustry  = '';
+      var currentSnapshot  = '';
+
       /* ── DOM references ────────────────────────── */
-      var modalOverlay  = document.getElementById('modal-overlay');
-      var keyInput      = document.getElementById('key-input');
-      var modalSaveBtn  = document.getElementById('modal-save-btn');
-      var modalError    = document.getElementById('modal-error');
-      var analyzeForm   = document.getElementById('analyze-form');
-      var urlInput      = document.getElementById('url-input');
-      var analyzeBtn    = document.getElementById('analyze-btn');
-      var formError     = document.getElementById('form-error');
-      var loadingEl     = document.getElementById('loading');
-      var resultsEl     = document.getElementById('results');
-      var changeKeyBtn  = document.getElementById('change-key-btn');
+      var modalOverlay    = document.getElementById('modal-overlay');
+      var keyInput        = document.getElementById('key-input');
+      var modalSaveBtn    = document.getElementById('modal-save-btn');
+      var modalError      = document.getElementById('modal-error');
+      var analyzeForm     = document.getElementById('analyze-form');
+      var urlInput        = document.getElementById('url-input');
+      var analyzeBtn      = document.getElementById('analyze-btn');
+      var formError       = document.getElementById('form-error');
+      var loadingEl       = document.getElementById('loading');
+      var loadingText     = document.getElementById('loading-text');
+      var resultsEl       = document.getElementById('results');
+      var advisorsCtaEl   = document.getElementById('advisors-cta');
+      var findAdvisorsBtn = document.getElementById('find-advisors-btn');
+      var expertsSectionEl= document.getElementById('experts-section');
+      var changeKeyBtn    = document.getElementById('change-key-btn');
 
       /* ── Init ──────────────────────────────────── */
       function init() {
         var savedKey;
         try { savedKey = localStorage.getItem(LS_KEY); } catch (e) { savedKey = null; }
-        if (!savedKey) {
-          showModal();
-        }
+        if (!savedKey) showModal();
+
         modalSaveBtn.addEventListener('click', handleSaveKey);
         keyInput.addEventListener('keydown', function (e) {
           if (e.key === 'Enter') handleSaveKey();
         });
-        analyzeForm.addEventListener('submit', handleSubmit);
-        changeKeyBtn.addEventListener('click', handleChangeKey);
+        analyzeForm.addEventListener('submit', handleStep1Submit);
+        findAdvisorsBtn.addEventListener('click', handleStep2Submit);
+        changeKeyBtn.addEventListener('click', showModal);
+
+        // Event delegation for remove buttons and add form inside comparables card
+        document.getElementById('card-comparables').addEventListener('click', function (e) {
+          if (e.target.classList.contains('peer-remove')) {
+            var idx = parseInt(e.target.getAttribute('data-index'), 10);
+            comparables.splice(idx, 1);
+            renderComparables();
+          }
+          if (e.target.id === 'add-comp-btn') {
+            handleAddComparable();
+          }
+        });
+        document.getElementById('card-comparables').addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' && e.target.id === 'add-comp-input') {
+            e.preventDefault();
+            handleAddComparable();
+          }
+        });
       }
 
       /* ── Modal ─────────────────────────────────── */
@@ -563,27 +626,21 @@
         modalOverlay.removeAttribute('hidden');
         setTimeout(function () { keyInput.focus(); }, 50);
       }
-
       function hideModal() {
         modalOverlay.setAttribute('hidden', '');
       }
-
       function handleSaveKey() {
         var key = keyInput.value.trim();
-        if (!key) {
-          showModalError('Please enter your Anthropic API key.');
-          return;
-        }
+        if (!key) { showModalError('Please enter your Anthropic API key.'); return; }
         if (!key.startsWith('sk-ant-')) {
           showModalError('Key should start with sk-ant-. Check console.anthropic.com.');
           return;
         }
         try {
           localStorage.setItem(LS_KEY, key);
-          var check = localStorage.getItem(LS_KEY);
-          if (!check) throw new Error('Storage read-back failed');
+          if (!localStorage.getItem(LS_KEY)) throw new Error();
         } catch (e) {
-          showModalError('Your browser is blocking storage. Check Settings \u2192 Privacy and allow site data for this page, then try again.');
+          showModalError('Your browser is blocking storage. Allow site data for this page in Settings \u2192 Privacy.');
           return;
         }
         keyInput.value = '';
@@ -596,47 +653,31 @@
           hideModal();
         }, 1000);
       }
+      function showModalError(msg) { modalError.textContent = msg; modalError.hidden = false; }
+      function hideModalError()    { modalError.hidden = true; }
 
-      function handleChangeKey() {
-        showModal();
-      }
-
-      function showModalError(msg) {
-        modalError.textContent = msg;
-        modalError.hidden = false;
-      }
-
-      function hideModalError() {
-        modalError.hidden = true;
-      }
-
-      /* ── Form submit ───────────────────────────── */
-      async function handleSubmit(e) {
+      /* ── Step 1: Analyze company ───────────────── */
+      async function handleStep1Submit(e) {
         e.preventDefault();
-
         var url    = urlInput.value.trim();
-        var apiKey; try { apiKey = localStorage.getItem(LS_KEY); } catch (e) { apiKey = null; }
+        var apiKey = getKey();
+        if (!url)    { showFormError('Please enter a company website URL.'); return; }
+        if (!apiKey) { showModal(); return; }
 
-        if (!url) {
-          showFormError('Please enter a company website URL.');
-          return;
-        }
-
-        if (!apiKey) {
-          showModal();
-          return;
-        }
-
-        setLoading(true);
+        currentUrl = url;
+        setLoading(true, 'Researching company\u2026');
         hideFormError();
-        hideResults();
+        resetResults();
 
         try {
-          var data   = await callClaude(url, apiKey);
-          var parsed = parseClaudeResponse(data);
-          renderResults(parsed);
-          showResults();
-          animateCards();
+          var data   = await callClaude(PROMPT_STEP1, 'Analyze this company: ' + url, apiKey);
+          var parsed = parseResponse(data, ['industry', 'snapshot', 'comparables']);
+
+          currentIndustry = parsed.industry;
+          currentSnapshot = parsed.snapshot;
+          comparables     = parsed.comparables.slice();
+
+          renderStep1(parsed);
         } catch (err) {
           showFormError(err.message || 'Something went wrong. Please try again.');
         } finally {
@@ -644,23 +685,134 @@
         }
       }
 
-      function setLoading(on) {
-        loadingEl.hidden = !on;
-        analyzeBtn.disabled = on;
-        analyzeBtn.textContent = on ? 'Analyzing\u2026' : 'Analyze';
+      /* ── Step 2: Find advisors ─────────────────── */
+      async function handleStep2Submit() {
+        var apiKey = getKey();
+        if (!apiKey) { showModal(); return; }
+
+        setLoading(true, 'Sourcing senior advisors\u2026');
+        hideFormError();
+        expertsSectionEl.hidden = true;
+        document.getElementById('card-experts').classList.remove('visible');
+
+        var userMsg = [
+          'Target company: ' + currentUrl,
+          'Industry: ' + currentIndustry,
+          'Snapshot: ' + currentSnapshot,
+          '',
+          'Selected comparable companies:',
+          comparables.map(function (c) {
+            return '- ' + c.name + (c.description ? ': ' + c.description : '');
+          }).join('\n'),
+          '',
+          'Based on this peer set, identify 5-6 senior advisors as instructed.'
+        ].join('\n');
+
+        try {
+          var data   = await callClaude(PROMPT_STEP2, userMsg, apiKey);
+          var parsed = parseResponse(data, ['experts']);
+          renderStep2(parsed);
+        } catch (err) {
+          showFormError(err.message || 'Something went wrong. Please try again.');
+          advisorsCtaEl.hidden = false;
+          findAdvisorsBtn.disabled = false;
+        } finally {
+          setLoading(false);
+        }
+      }
+
+      /* ── Renderers ─────────────────────────────── */
+      function renderStep1(data) {
+        document.getElementById('card-industry').innerHTML =
+          '<div class="card-title">Industry</div>' +
+          '<h3>' + escHtml(data.industry) + '</h3>';
+
+        document.getElementById('card-snapshot').innerHTML =
+          '<div class="card-title">Company Snapshot</div>' +
+          '<p>' + escHtml(data.snapshot) + '</p>';
+
+        renderComparables();
+
+        resultsEl.hidden = false;
+        advisorsCtaEl.hidden = false;
+
+        // Stagger cards
+        var cards = resultsEl.querySelectorAll('.card');
+        cards.forEach(function (card, i) {
+          setTimeout(function () { card.classList.add('visible'); }, i * 150);
+        });
+      }
+
+      function renderComparables() {
+        var items = comparables.map(function (c, i) {
+          return '<li>' +
+            '<div class="peer-body">' +
+              '<div class="peer-name">' + escHtml(c.name) + '</div>' +
+              (c.description ? '<div class="peer-desc">' + escHtml(c.description) + '</div>' : '') +
+            '</div>' +
+            '<button class="peer-remove" data-index="' + i + '" aria-label="Remove ' + escHtml(c.name) + '">\u00d7</button>' +
+          '</li>';
+        }).join('');
+
+        document.getElementById('card-comparables').innerHTML =
+          '<div class="card-title">Comparable Companies</div>' +
+          '<ul class="peer-list">' + items + '</ul>' +
+          '<div class="add-comp-row">' +
+            '<input id="add-comp-input" class="add-comp-input" type="text" placeholder="Add a company\u2026" />' +
+            '<button id="add-comp-btn" class="add-comp-btn" type="button">Add</button>' +
+          '</div>';
+      }
+
+      function handleAddComparable() {
+        var input = document.getElementById('add-comp-input');
+        var name  = input ? input.value.trim() : '';
+        if (!name) return;
+        comparables.push({ name: name, description: '' });
+        renderComparables();
+        // Re-focus the new input
+        var newInput = document.getElementById('add-comp-input');
+        if (newInput) newInput.focus();
+      }
+
+      function renderStep2(data) {
+        var expItems = data.experts.map(function (ex) {
+          return '<li>' +
+            '<div class="expert-name">' + escHtml(ex.name) + '</div>' +
+            '<div class="expert-role">' + escHtml(ex.role) + '</div>' +
+            '<div class="expert-rel">'  + escHtml(ex.relevance) + '</div>' +
+          '</li>';
+        }).join('');
+
+        var card = document.getElementById('card-experts');
+        card.innerHTML =
+          '<div class="card-title">Senior Advisors</div>' +
+          '<ul class="expert-list">' + expItems + '</ul>';
+
+        expertsSectionEl.hidden = false;
+        setTimeout(function () { card.classList.add('visible'); }, 50);
+
+        // Hide the CTA now that advisors are shown
+        advisorsCtaEl.hidden = true;
+      }
+
+      /* ── Reset ─────────────────────────────────── */
+      function resetResults() {
+        resultsEl.hidden = true;
+        advisorsCtaEl.hidden = true;
+        expertsSectionEl.hidden = true;
+        resultsEl.querySelectorAll('.card').forEach(function (c) { c.classList.remove('visible'); });
+        document.getElementById('card-experts').classList.remove('visible');
+        comparables = [];
       }
 
       /* ── API call ──────────────────────────────── */
-      async function callClaude(companyUrl, apiKey) {
+      async function callClaude(systemPrompt, userMessage, apiKey) {
         var body = {
           model:      MODEL,
           max_tokens: MAX_TOKENS,
-          system:     SYSTEM_PROMPT,
-          tools: [{ type: 'web_search_20250305', name: 'web_search' }],
-          messages: [{
-            role:    'user',
-            content: 'Analyze this company: ' + companyUrl + '\n\nResearch it thoroughly using web search, then return the structured JSON as instructed.'
-          }]
+          system:     systemPrompt,
+          tools:      [{ type: 'web_search_20250305', name: 'web_search' }],
+          messages:   [{ role: 'user', content: userMessage }]
         };
 
         var res;
@@ -668,7 +820,7 @@
           res = await fetch(API_URL, {
             method: 'POST',
             headers: {
-              'x-api-key':        apiKey,
+              'x-api-key':         apiKey,
               'anthropic-version': '2023-06-01',
               'anthropic-dangerous-direct-browser-access': 'true',
               'content-type':      'application/json'
@@ -683,69 +835,46 @@
           var errBody = {};
           try { errBody = await res.json(); } catch (_) {}
           console.error('Anthropic API error', res.status, JSON.stringify(errBody, null, 2));
-          var apiMsg = (errBody && errBody.error && errBody.error.message) || '';
-          if (res.status === 401) {
-            throw new Error('Invalid API key. Click \u201cChange API key\u201d in the footer to update it.');
-          }
-          if (res.status === 429) {
-            throw new Error('Rate limit reached. Please wait a moment and try again.');
-          }
-          throw new Error(apiMsg || ('API error ' + res.status + '. Please try again.'));
+          var msg = (errBody && errBody.error && errBody.error.message) || '';
+          if (res.status === 401) throw new Error('Invalid API key. Click \u201cChange API key\u201d to update it.');
+          if (res.status === 429) throw new Error('Rate limit reached. Please wait a moment and try again.');
+          throw new Error(msg || ('API error ' + res.status + '. Please try again.'));
         }
 
         return res.json();
       }
 
       /* ── Response parser ───────────────────────── */
-      function parseClaudeResponse(data) {
+      function parseResponse(data, requiredKeys) {
         var content = data && data.content;
         if (!Array.isArray(content) || content.length === 0) {
           throw new Error('Unexpected API response format. Please try again.');
         }
 
-        // Find the last text block — the final JSON answer
         var lastTextBlock = null;
         for (var i = 0; i < content.length; i++) {
-          if (content[i].type === 'text') {
-            lastTextBlock = content[i];
-          }
+          if (content[i].type === 'text') lastTextBlock = content[i];
         }
-
-        if (!lastTextBlock) {
-          throw new Error('No text response received from Claude. Please try again.');
-        }
+        if (!lastTextBlock) throw new Error('No text response from Claude. Please try again.');
 
         var raw = lastTextBlock.text.trim();
-
-        // Layer 1: direct parse
         var parsed = tryParse(raw);
 
-        // Layer 2: strip markdown code fences
         if (!parsed) {
-          var fenceMatch = raw.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/);
-          if (fenceMatch) {
-            parsed = tryParse(fenceMatch[1].trim());
+          var fence = raw.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/);
+          if (fence) parsed = tryParse(fence[1].trim());
+        }
+        if (!parsed) {
+          var obj = raw.match(/\{[\s\S]*\}/);
+          if (obj) parsed = tryParse(obj[0]);
+        }
+        if (!parsed) throw new Error('Could not parse Claude\u2019s response. Please try again.');
+
+        for (var k = 0; k < requiredKeys.length; k++) {
+          if (!parsed[requiredKeys[k]]) {
+            throw new Error('Incomplete response from Claude. Please try again.');
           }
         }
-
-        // Layer 3: extract first {...} JSON object via regex
-        if (!parsed) {
-          var objMatch = raw.match(/\{[\s\S]*\}/);
-          if (objMatch) {
-            parsed = tryParse(objMatch[0]);
-          }
-        }
-
-        if (!parsed) {
-          throw new Error('Could not parse Claude\u2019s response as JSON. Please try again.');
-        }
-
-        // Validate required shape
-        if (!parsed.industry || !parsed.snapshot ||
-            !Array.isArray(parsed.comparables) || !Array.isArray(parsed.experts)) {
-          throw new Error('Incomplete data returned by Claude. Please try again.');
-        }
-
         return parsed;
       }
 
@@ -753,41 +882,21 @@
         try { return JSON.parse(str); } catch (_) { return null; }
       }
 
-      /* ── Renderer ──────────────────────────────── */
-      function renderResults(data) {
-        // Card: Industry
-        document.getElementById('card-industry').innerHTML =
-          '<div class="card-title">Industry</div>' +
-          '<h3>' + escHtml(data.industry) + '</h3>';
-
-        // Card: Snapshot
-        document.getElementById('card-snapshot').innerHTML =
-          '<div class="card-title">Company Snapshot</div>' +
-          '<p>' + escHtml(data.snapshot) + '</p>';
-
-        // Card: Comparable companies
-        var compItems = data.comparables.map(function (c) {
-          return '<li>' +
-            '<div class="peer-name">' + escHtml(c.name) + '</div>' +
-            '<div class="peer-desc">' + escHtml(c.description) + '</div>' +
-            '</li>';
-        }).join('');
-        document.getElementById('card-comparables').innerHTML =
-          '<div class="card-title">Comparable Companies</div>' +
-          '<ul class="peer-list">' + compItems + '</ul>';
-
-        // Card: Experts
-        var expItems = data.experts.map(function (ex) {
-          return '<li>' +
-            '<div class="expert-name">' + escHtml(ex.name) + '</div>' +
-            '<div class="expert-role">' + escHtml(ex.role) + '</div>' +
-            '<div class="expert-rel">' + escHtml(ex.relevance) + '</div>' +
-            '</li>';
-        }).join('');
-        document.getElementById('card-experts').innerHTML =
-          '<div class="card-title">Suggested Experts</div>' +
-          '<ul class="expert-list">' + expItems + '</ul>';
+      /* ── Helpers ───────────────────────────────── */
+      function getKey() {
+        try { return localStorage.getItem(LS_KEY); } catch (e) { return null; }
       }
+
+      function setLoading(on, text) {
+        loadingEl.hidden = !on;
+        if (on && text) loadingText.textContent = text;
+        analyzeBtn.disabled = on;
+        findAdvisorsBtn.disabled = on;
+        analyzeBtn.textContent = on ? 'Analyzing\u2026' : 'Analyze';
+      }
+
+      function showFormError(msg) { formError.textContent = msg; formError.hidden = false; }
+      function hideFormError()    { formError.hidden = true; }
 
       function escHtml(str) {
         return String(str)
@@ -797,38 +906,6 @@
           .replace(/>/g,  '&gt;')
           .replace(/"/g,  '&quot;')
           .replace(/'/g,  '&#39;');
-      }
-
-      /* ── Show / hide results ───────────────────── */
-      function showResults() {
-        resultsEl.hidden = false;
-      }
-
-      function hideResults() {
-        resultsEl.hidden = true;
-        document.querySelectorAll('.card').forEach(function (c) {
-          c.classList.remove('visible');
-        });
-      }
-
-      /* ── Staggered card animation ──────────────── */
-      function animateCards() {
-        var cards = document.querySelectorAll('.card');
-        cards.forEach(function (card, i) {
-          setTimeout(function () {
-            card.classList.add('visible');
-          }, i * 150);
-        });
-      }
-
-      /* ── Error helpers ─────────────────────────── */
-      function showFormError(msg) {
-        formError.textContent = msg;
-        formError.hidden = false;
-      }
-
-      function hideFormError() {
-        formError.hidden = true;
       }
 
       /* ── Boot ──────────────────────────────────── */
