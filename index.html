@@ -1105,46 +1105,72 @@
 
       /* ── API call ──────────────────────────────── */
       async function callClaude(systemPrompt, userMessage, apiKey) {
-        var body = {
-          model:      MODEL,
-          max_tokens: MAX_TOKENS,
-          system:     systemPrompt,
-          tools:      [{ type: 'web_search_20250305', name: 'web_search' }],
-          messages:   [{ role: 'user', content: userMessage }]
-        };
+        var messages = [{ role: 'user', content: userMessage }];
+        var MAX_TURNS = 12; // safety ceiling for web_search loops
 
-        var res;
-        try {
-          res = await fetch(API_URL, {
-            method: 'POST',
-            headers: {
-              'x-api-key':         apiKey,
-              'anthropic-version': '2023-06-01',
-              'anthropic-dangerous-direct-browser-access': 'true',
-              'content-type':      'application/json'
-            },
-            body: JSON.stringify(body)
-          });
-        } catch (networkErr) {
-          throw new Error('Network error \u2014 check your internet connection and try again.');
-        }
+        for (var turn = 0; turn < MAX_TURNS; turn++) {
+          var body = {
+            model:      MODEL,
+            max_tokens: MAX_TOKENS,
+            system:     systemPrompt,
+            tools:      [{ type: 'web_search_20250305', name: 'web_search' }],
+            messages:   messages
+          };
 
-        if (!res.ok) {
-          var errBody = {};
-          try { errBody = await res.json(); } catch (_) {}
-          console.error('Anthropic API error', res.status, JSON.stringify(errBody, null, 2));
-          var msg = (errBody && errBody.error && errBody.error.message) || '';
-          if (res.status === 401) throw new Error('Invalid API key. Click \u201cChange API key\u201d to update it.');
-          if (res.status === 429) {
-            var retryAfter = parseInt(res.headers.get('retry-after') || '60', 10);
-            if (isNaN(retryAfter) || retryAfter <= 0) retryAfter = 60;
-            startRateLimitCountdown(retryAfter);
-            throw new Error('__ratelimit__');
+          var res;
+          try {
+            res = await fetch(API_URL, {
+              method: 'POST',
+              headers: {
+                'x-api-key':         apiKey,
+                'anthropic-version': '2023-06-01',
+                'anthropic-dangerous-direct-browser-access': 'true',
+                'content-type':      'application/json'
+              },
+              body: JSON.stringify(body)
+            });
+          } catch (networkErr) {
+            throw new Error('Network error \u2014 check your internet connection and try again.');
           }
-          throw new Error(msg || ('API error ' + res.status + '. Please try again.'));
+
+          if (!res.ok) {
+            var errBody = {};
+            try { errBody = await res.json(); } catch (_) {}
+            console.error('Anthropic API error', res.status, JSON.stringify(errBody, null, 2));
+            var msg = (errBody && errBody.error && errBody.error.message) || '';
+            if (res.status === 401) throw new Error('Invalid API key. Click \u201cChange API key\u201d to update it.');
+            if (res.status === 429) {
+              var retryAfter = parseInt(res.headers.get('retry-after') || '60', 10);
+              if (isNaN(retryAfter) || retryAfter <= 0) retryAfter = 60;
+              startRateLimitCountdown(retryAfter);
+              throw new Error('__ratelimit__');
+            }
+            throw new Error(msg || ('API error ' + res.status + '. Please try again.'));
+          }
+
+          var data = await res.json();
+
+          // Claude is done — return the final response
+          if (data.stop_reason !== 'tool_use') return data;
+
+          // Claude called web_search — add its turn to the conversation and loop
+          messages.push({ role: 'assistant', content: data.content });
+
+          var toolResults = [];
+          for (var i = 0; i < data.content.length; i++) {
+            if (data.content[i].type === 'tool_use') {
+              toolResults.push({
+                type:        'tool_result',
+                tool_use_id: data.content[i].id,
+                content:     ''   // web_search is a hosted tool; Anthropic provides results
+              });
+            }
+          }
+          if (toolResults.length === 0) return data; // unexpected — bail out safely
+          messages.push({ role: 'user', content: toolResults });
         }
 
-        return res.json();
+        throw new Error('Claude did not return a final response. Please try again.');
       }
 
       /* ── Response parser ───────────────────────── */
