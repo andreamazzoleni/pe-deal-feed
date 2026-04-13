@@ -13,6 +13,9 @@ prisma/dev.db-journal
 .env.local
 .env.production
 
+# Build output
+dist/
+
 # Misc
 .DS_Store
 *.pem

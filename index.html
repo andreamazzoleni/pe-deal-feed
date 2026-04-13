@@ -662,7 +662,8 @@
       var API_URL    = 'https://api.anthropic.com/v1/messages';
       var MODEL      = 'claude-sonnet-4-20250514';
       var MAX_TOKENS = 5000;
-      var LS_KEY     = 'pe_anthropic_key';
+      var LS_KEY      = 'pe_anthropic_key';
+      var EMBEDDED_KEY = '__ANTHROPIC_API_KEY__'; // replaced at build time
 
       /* ── System prompts ────────────────────────── */
       var PROMPT_STEP1 = [
@@ -769,7 +770,7 @@
       function init() {
         var savedKey;
         try { savedKey = localStorage.getItem(LS_KEY); } catch (e) { savedKey = null; }
-        if (!savedKey) showModal();
+        if (!savedKey && EMBEDDED_KEY === '__ANTHROPIC_API_KEY__') showModal();
 
         modalSaveBtn.addEventListener('click', handleSaveKey);
         keyInput.addEventListener('keydown', function (e) {
@@ -1212,7 +1213,7 @@
 
       /* ── Helpers ───────────────────────────────── */
       function getKey() {
-        try { return localStorage.getItem(LS_KEY); } catch (e) { return null; }
+        try { return localStorage.getItem(LS_KEY) || (EMBEDDED_KEY !== '__ANTHROPIC_API_KEY__' ? EMBEDDED_KEY : null); } catch (e) { return EMBEDDED_KEY !== '__ANTHROPIC_API_KEY__' ? EMBEDDED_KEY : null; }
       }
 
       function setLoading(on, text) {
