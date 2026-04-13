@@ -286,12 +286,56 @@
       color: var(--gold-card);
       margin-bottom: 0.875rem;
     }
-    #card-industry h3 {
-      font-family: var(--font-serif);
-      font-size: 1.5rem;
-      line-height: 1.25;
-      color: var(--text-dark);
+    /* ── Sector tags ───────────────────────────────── */
+    .sector-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
     }
+    .sector-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.3rem 0.55rem 0.3rem 0.75rem;
+      background: #EEF2FF;
+      border: 1px solid #C7D2FE;
+      border-radius: 99px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: #312E81;
+      white-space: nowrap;
+    }
+    .sector-remove {
+      background: none;
+      border: none;
+      padding: 0;
+      font-size: 0.9rem;
+      line-height: 1;
+      color: #A5B4FC;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+    .sector-remove:hover { color: #EF4444; }
+    .add-sector-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.3rem 0.75rem;
+      border: 1px dashed #C7D2FE;
+      border-radius: 99px;
+    }
+    .add-sector-input {
+      border: none;
+      outline: none;
+      font-family: var(--font-sans);
+      font-size: 0.82rem;
+      color: var(--text-dark);
+      background: transparent;
+      width: 90px;
+    }
+    .add-sector-input::placeholder { color: #A5B4FC; }
     #card-snapshot p {
       font-size: 0.925rem;
       line-height: 1.7;
@@ -658,8 +702,8 @@
 
       /* ── State ─────────────────────────────────── */
       var comparables   = [];   // [{name, description}] — editable after step 1
+      var sectors       = [];   // string[] — editable after step 1
       var currentUrl    = '';
-      var currentIndustry  = '';
       var currentSnapshot  = '';
 
       /* ── DOM references ────────────────────────── */
@@ -692,6 +736,21 @@
         analyzeForm.addEventListener('submit', handleStep1Submit);
         findAdvisorsBtn.addEventListener('click', handleStep2Submit);
         changeKeyBtn.addEventListener('click', showModal);
+
+        // Event delegation for sector tags
+        document.getElementById('card-industry').addEventListener('click', function (e) {
+          if (e.target.classList.contains('sector-remove')) {
+            var idx = parseInt(e.target.getAttribute('data-index'), 10);
+            sectors.splice(idx, 1);
+            renderSectors();
+          }
+        });
+        document.getElementById('card-industry').addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' && e.target.id === 'add-sector-input') {
+            e.preventDefault();
+            handleAddSector();
+          }
+        });
 
         // Event delegation for remove buttons and add form inside comparables card
         document.getElementById('card-comparables').addEventListener('click', function (e) {
@@ -764,7 +823,7 @@
           var data   = await callClaude(PROMPT_STEP1, 'Analyze this company: ' + url, apiKey);
           var parsed = parseResponse(data, ['industry', 'snapshot', 'comparables']);
 
-          currentIndustry = parsed.industry;
+          sectors         = parsed.industry.split(/[\/,]/).map(function (s) { return s.trim(); }).filter(Boolean);
           currentSnapshot = parsed.snapshot;
           comparables     = parsed.comparables.slice();
 
@@ -788,7 +847,7 @@
 
         var userMsg = [
           'Target company: ' + currentUrl,
-          'Industry: ' + currentIndustry,
+          'Sectors: ' + sectors.join(', '),
           'Snapshot: ' + currentSnapshot,
           '',
           'Selected comparable companies:',
@@ -814,9 +873,7 @@
 
       /* ── Renderers ─────────────────────────────── */
       function renderStep1(data) {
-        document.getElementById('card-industry').innerHTML =
-          '<div class="card-title">Industry</div>' +
-          '<h3>' + escHtml(data.industry) + '</h3>';
+        renderSectors();
 
         document.getElementById('card-snapshot').innerHTML =
           '<div class="card-title">Company Snapshot</div>' +
@@ -832,6 +889,33 @@
         cards.forEach(function (card, i) {
           setTimeout(function () { card.classList.add('visible'); }, i * 150);
         });
+      }
+
+      function renderSectors() {
+        var tags = sectors.map(function (s, i) {
+          return '<span class="sector-tag">' +
+            escHtml(s) +
+            '<button class="sector-remove" data-index="' + i + '" aria-label="Remove ' + escHtml(s) + '">\u00d7</button>' +
+          '</span>';
+        }).join('');
+        document.getElementById('card-industry').innerHTML =
+          '<div class="card-title">Sectors</div>' +
+          '<div class="sector-tags">' +
+            tags +
+            '<span class="add-sector-wrap">' +
+              '<input id="add-sector-input" class="add-sector-input" type="text" placeholder="Add sector\u2026" />' +
+            '</span>' +
+          '</div>';
+      }
+
+      function handleAddSector() {
+        var input = document.getElementById('add-sector-input');
+        var val   = input ? input.value.trim() : '';
+        if (!val) return;
+        sectors.push(val);
+        renderSectors();
+        var newInput = document.getElementById('add-sector-input');
+        if (newInput) newInput.focus();
       }
 
       function renderComparables() {
@@ -932,6 +1016,7 @@
         resultsEl.querySelectorAll('.card').forEach(function (c) { c.classList.remove('visible'); });
         document.getElementById('card-experts').classList.remove('visible');
         comparables = [];
+        sectors     = [];
       }
 
       /* ── API call ──────────────────────────────── */
