@@ -661,7 +661,7 @@
       /* ── Constants ─────────────────────────────── */
       var API_URL    = 'https://api.anthropic.com/v1/messages';
       var MODEL      = 'claude-sonnet-4-20250514';
-      var MAX_TOKENS = 5000;
+      var MAX_TOKENS = 8000;
       var LS_KEY      = 'pe_anthropic_key';
       var EMBEDDED_KEY = '__ANTHROPIC_API_KEY__'; // replaced at build time
 
@@ -1166,12 +1166,13 @@
               toolResults.push({
                 type:        'tool_result',
                 tool_use_id: data.content[i].id,
-                content:     ''   // web_search is a hosted tool; Anthropic provides results
+                content:     []   // web_search is a hosted tool; Anthropic provides results
               });
             }
           }
           if (toolResults.length === 0) return data; // unexpected — bail out safely
           messages.push({ role: 'user', content: toolResults });
+
         }
 
         throw new Error('Claude did not return a final response. Please try again.');
@@ -1201,7 +1202,10 @@
           var obj = raw.match(/\{[\s\S]*\}/);
           if (obj) parsed = tryParse(obj[0]);
         }
-        if (!parsed) throw new Error('Could not parse Claude\u2019s response. Please try again.');
+        if (!parsed) {
+          console.error('Could not parse Claude response. stop_reason:', data.stop_reason, '\nRaw text:', raw);
+          throw new Error('Could not parse Claude\u2019s response. Please try again.');
+        }
 
         for (var k = 0; k < requiredKeys.length; k++) {
           if (parsed[requiredKeys[k]] === undefined || parsed[requiredKeys[k]] === null) {
