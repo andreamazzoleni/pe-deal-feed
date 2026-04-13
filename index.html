@@ -683,8 +683,8 @@
         '  ]',
         '}',
         'Include 3-5 companies per list.',
-        'direct_competitors: companies doing the exact same thing, competing head-to-head for the same customers.',
-        'broader_comparables: companies with a similar business model or customer base that differ in at least one meaningful dimension (geography, vertical, delivery model, price point, etc.).',
+        'direct_competitors: companies that go head-to-head offering the same products and services to the same customers.',
+        'broader_comparables: companies that offer similar services to similar customers but differ in at least one meaningful dimension (geography, vertical, delivery model, price point, etc.).',
         'Descriptions must explain the relationship to the target company specifically.',
         'Do not include any text outside the JSON object.'
       ].join('\n');
@@ -708,8 +708,8 @@
         'Prioritise C-suite, VP, and Director-level profiles.',
         'For each: name, most senior role held at the target, tenure at target (e.g. "2017–2022"), and current position.',
         '',
-        'BUCKET 3 — Senior Experts from the Broader Comparable Universe',
-        'For each company in the broader comparable universe list, identify 1–2 current or former senior operators (C-suite or VP-level) with deep hands-on experience at that company.',
+        'BUCKET 3 — Senior Experts from the Broader Competitive Universe',
+        'For each company in the broader competitive universe list, identify 1–2 current or former senior operators (C-suite or VP-level) with deep hands-on experience at that company.',
         'Include which comparable company they are associated with.',
         '',
         'Return ONLY a valid JSON object (no markdown fences, no text outside the JSON):',
@@ -1012,7 +1012,7 @@
       }
 
       function renderBroaderComparables() {
-        renderPeerCard(broaderComparables, 'card-broader-comparables', 'Broader Comparable Universe', 'add-broader-input', 'add-broader-btn');
+        renderPeerCard(broaderComparables, 'card-broader-comparables', 'Broader Competitive Universe', 'add-broader-input', 'add-broader-btn');
       }
 
       function handleAddDirect() {
