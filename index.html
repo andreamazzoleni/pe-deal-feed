@@ -708,9 +708,11 @@
         'Prioritise C-suite, VP, and Director-level profiles.',
         'For each: name, most senior role held at the target, tenure at target (e.g. "2017–2022"), and current position.',
         '',
-        'BUCKET 3 — Senior Experts from the Broader Competitive Universe',
-        'For each company in the broader competitive universe list, identify 1–2 current or former senior operators (C-suite or VP-level) with deep hands-on experience at that company.',
-        'Include which comparable company they are associated with.',
+        'BUCKET 3 — Senior Experts from the Competitive Universe',
+        'Cover BOTH the direct competitors list AND the broader competitive universe list.',
+        'For each company in either list, find at least 2 CURRENT senior operators (C-suite or VP-level still at that company) AND at least 2 FORMER senior operators (who have since left).',
+        'In addition, search for sector-level experts who have NOT worked at any of the listed companies but have deep domain expertise in the relevant sectors. These could be consultants, investors, advisors, or operators known for work in these sectors.',
+        'For each person: include which company or sector they are associated with, their current role, and a note on whether they are a current employee, former employee, or independent sector expert.',
         '',
         'Return ONLY a valid JSON object (no markdown fences, no text outside the JSON):',
         '{',
@@ -735,7 +737,8 @@
         '    {',
         '      "name": "full name",',
         '      "role": "current title and affiliation",',
-        '      "comparable_company": "which company in the broader comparable universe they are associated with",',
+        '      "type": "current" | "former" | "sector expert",',
+        '      "associated_company": "company name from the competitor/comparable lists, or the relevant sector if a sector expert",',
         '      "relevance": "1 sentence on what they bring"',
         '    }',
         '  ]',
@@ -1065,17 +1068,18 @@
           '<div class="card-title">Former Employees</div>' +
           '<ul class="expert-list">' + formerItems + '</ul>';
 
-        // Card 3 — Broader Universe Experts
+        // Card 3 — Competitive Universe Experts
         var broaderItems = (data.broader_experts || []).map(function (ex) {
+          var company = ex.associated_company || ex.comparable_company || '';
           return '<li class="expert-entry">' +
             '<div class="expert-name">' + escHtml(ex.name || '') + '</div>' +
-            (ex.comparable_company ? '<div class="expert-comparable">' + escHtml(ex.comparable_company) + '</div>' : '') +
+            (company ? '<div class="expert-comparable">' + escHtml(company) + '</div>' : '') +
             '<div class="expert-role">' + escHtml(ex.role || '') + '</div>' +
             (ex.relevance ? '<div class="expert-field">' + escHtml(ex.relevance) + '</div>' : '') +
           '</li>';
         }).join('');
         document.getElementById('card-broader-experts').innerHTML =
-          '<div class="card-title">Broader Universe Experts</div>' +
+          '<div class="card-title">Competitive Universe Experts</div>' +
           '<ul class="expert-list">' + broaderItems + '</ul>';
 
         expertsSectionEl.hidden = false;
