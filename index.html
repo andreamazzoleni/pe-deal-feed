@@ -546,7 +546,8 @@
 
       /* ── Init ──────────────────────────────────── */
       function init() {
-        var savedKey = localStorage.getItem(LS_KEY);
+        var savedKey;
+        try { savedKey = localStorage.getItem(LS_KEY); } catch (e) { savedKey = null; }
         if (!savedKey) {
           showModal();
         }
@@ -578,10 +579,23 @@
           showModalError('Key should start with sk-ant-. Check console.anthropic.com.');
           return;
         }
-        localStorage.setItem(LS_KEY, key);
+        try {
+          localStorage.setItem(LS_KEY, key);
+          var check = localStorage.getItem(LS_KEY);
+          if (!check) throw new Error('Storage read-back failed');
+        } catch (e) {
+          showModalError('Your browser is blocking storage. Check Settings \u2192 Privacy and allow site data for this page, then try again.');
+          return;
+        }
         keyInput.value = '';
         hideModalError();
-        hideModal();
+        modalSaveBtn.textContent = '\u2713 Key saved';
+        modalSaveBtn.style.background = '#2a7a4b';
+        setTimeout(function () {
+          modalSaveBtn.textContent = 'Save & Continue';
+          modalSaveBtn.style.background = '';
+          hideModal();
+        }, 1000);
       }
 
       function handleChangeKey() {
@@ -602,7 +616,7 @@
         e.preventDefault();
 
         var url    = urlInput.value.trim();
-        var apiKey = localStorage.getItem(LS_KEY);
+        var apiKey; try { apiKey = localStorage.getItem(LS_KEY); } catch (e) { apiKey = null; }
 
         if (!url) {
           showFormError('Please enter a company website URL.');
