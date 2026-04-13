@@ -391,27 +391,92 @@
     #find-advisors-btn:disabled { opacity: 0.55; cursor: not-allowed; }
 
     /* ── Expert list ───────────────────────────────── */
+    .bucket-section { margin-bottom: 1.25rem; }
+    .bucket-section:last-of-type { margin-bottom: 0; }
+
+    .bucket-heading {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gold-card);
+      padding-bottom: 0.5rem;
+      margin-bottom: 0.25rem;
+      border-bottom: 2px solid #F0F0F4;
+    }
+
     .expert-list { list-style: none; display: flex; flex-direction: column; gap: 0; }
-    .expert-list li {
+    .expert-entry {
       padding: 0.75rem 0;
       border-top: 1px solid var(--border-card);
     }
-    .expert-list li:first-child { border-top: none; padding-top: 0; }
-    .expert-list li:last-child  { padding-bottom: 0; }
+    .expert-entry:first-child { border-top: none; padding-top: 0.25rem; }
+    .expert-entry:last-child  { padding-bottom: 0; }
+
     .expert-name {
-      font-size: 0.875rem;
+      font-size: 0.9rem;
       font-weight: 600;
       color: var(--text-dark);
-      margin-bottom: 0.15rem;
+      margin-bottom: 0.1rem;
     }
     .expert-role {
       font-size: 0.78rem;
       font-style: italic;
       color: var(--text-muted);
-      margin-bottom: 0.3rem;
+      margin-bottom: 0.4rem;
       line-height: 1.4;
     }
-    .expert-rel { font-size: 0.8rem; color: #4B5563; line-height: 1.5; }
+    .expert-field {
+      font-size: 0.8rem;
+      color: #4B5563;
+      line-height: 1.55;
+      margin-bottom: 0.2rem;
+    }
+    .expert-field:last-child { margin-bottom: 0; }
+    .expert-label {
+      font-weight: 600;
+      color: #374151;
+      margin-right: 0.25rem;
+    }
+    .expert-angle { color: #6B7280; }
+
+    /* ── Top 3 ─────────────────────────────────────── */
+    .top3-section {
+      margin-top: 1.25rem;
+      padding-top: 1.25rem;
+      border-top: 2px solid #F0F0F4;
+    }
+    .top3-heading {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gold-card);
+      margin-bottom: 0.75rem;
+    }
+    .top3-list { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+    .top3-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+    .top3-rank {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--navy);
+      color: var(--gold);
+      font-size: 0.72rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1px;
+    }
+    .top3-body { flex: 1; }
+    .top3-name { font-size: 0.85rem; font-weight: 600; color: var(--text-dark); }
+    .top3-rationale { font-size: 0.8rem; color: #6B7280; line-height: 1.5; margin-top: 0.1rem; }
 
     /* ── Footer ────────────────────────────────────── */
     footer {
@@ -553,14 +618,40 @@
       ].join('\n');
 
       var PROMPT_STEP2 = [
-        'You are an expert private equity research analyst sourcing senior advisors.',
-        'You will be given a target company, its industry, and a list of comparable companies that a PE firm has selected as the relevant peer set.',
-        'Use web_search to identify 5-6 real, named senior advisors — former C-suite operators, board members, or sector specialists — who have direct experience in this specific space.',
+        'You are an expert advisor sourcing analyst for a private equity firm. Your job is to identify high-quality human experts — current and former executives, operators, and industry insiders — who could advise the firm on a potential investment.',
+        '',
+        'You will receive:',
+        '- Target company: the URL, industry vertical, and a brief snapshot of the business',
+        '- Comparable companies: a curated peer set the PE firm has already selected',
+        '',
+        'Use web_search throughout to find real, named individuals. Do not invent people.',
+        'If you cannot find someone for a bucket, say so and explain why.',
+        '',
+        'Search across three buckets:',
+        '',
+        'BUCKET A — Former executives of the target company',
+        'Search for ex-CEOs, ex-COOs, ex-CFOs, ex-VPs of Sales/Operations/Strategy who have left the company and are now available to be approached. For each: name, previous role and tenure at the target, current position.',
+        '',
+        'BUCKET B — Current and former executives of comparable companies',
+        'For each comparable, identify 2-3 senior operators (C-suite or VP level) with deep hands-on experience in the same business model. Prioritise people who have been through a PE ownership cycle, a sale process, or significant operational transformation.',
+        '',
+        'BUCKET C — Adjacent experts',
+        'Sector-focused consultants with published work, former board members, industry analysts, academics with applied expertise, or advisors known to operate in PE-backed settings.',
+        '',
         'Return ONLY a valid JSON object (no markdown fences, no text outside the JSON):',
         '{',
         '  "experts": [',
-        '    {"name": "<full name>", "role": "<current title and affiliation>", "relevance": "<one sentence tying their specific experience to this company and peer set>"},',
-        '    ...',
+        '    {',
+        '      "bucket": "A",',
+        '      "name": "full name",',
+        '      "role": "current title and affiliation",',
+        '      "connection": "their specific connection to the target or a comparable",',
+        '      "relevance": "1-2 sentences: what knowledge or network do they bring?",',
+        '      "conversation_angle": "what would you ask them? e.g. unit economics, churn drivers, salesforce structure"',
+        '    }',
+        '  ],',
+        '  "top_3": [',
+        '    { "name": "full name", "rationale": "why contact this person first" }',
         '  ]',
         '}'
       ].join('\n');
@@ -775,23 +866,61 @@
       }
 
       function renderStep2(data) {
-        var expItems = data.experts.map(function (ex) {
-          return '<li>' +
+        var bucketLabels = {
+          'A': 'Bucket A \u2014 Former Target Executives',
+          'B': 'Bucket B \u2014 Comparable Company Executives',
+          'C': 'Bucket C \u2014 Adjacent Experts'
+        };
+
+        // Group experts by bucket
+        var buckets = { A: [], B: [], C: [] };
+        (data.experts || []).forEach(function (ex) {
+          var b = (ex.bucket || 'C').toUpperCase();
+          if (!buckets[b]) buckets[b] = [];
+          buckets[b].push(ex);
+        });
+
+        function renderExpert(ex) {
+          return '<li class="expert-entry">' +
             '<div class="expert-name">' + escHtml(ex.name) + '</div>' +
             '<div class="expert-role">' + escHtml(ex.role) + '</div>' +
-            '<div class="expert-rel">'  + escHtml(ex.relevance) + '</div>' +
+            '<div class="expert-field"><span class="expert-label">Connection</span> ' + escHtml(ex.connection || '') + '</div>' +
+            '<div class="expert-field"><span class="expert-label">Why relevant</span> ' + escHtml(ex.relevance || '') + '</div>' +
+            '<div class="expert-field expert-angle"><span class="expert-label">Ask about</span> ' + escHtml(ex.conversation_angle || '') + '</div>' +
           '</li>';
+        }
+
+        var bucketsHtml = ['A', 'B', 'C'].map(function (key) {
+          var experts = buckets[key];
+          if (!experts || experts.length === 0) return '';
+          return '<div class="bucket-section">' +
+            '<div class="bucket-heading">' + bucketLabels[key] + '</div>' +
+            '<ul class="expert-list">' + experts.map(renderExpert).join('') + '</ul>' +
+          '</div>';
         }).join('');
 
+        var top3Html = '';
+        if (data.top_3 && data.top_3.length) {
+          var top3Items = data.top_3.map(function (t, i) {
+            return '<li class="top3-item">' +
+              '<span class="top3-rank">' + (i + 1) + '</span>' +
+              '<div class="top3-body">' +
+                '<div class="top3-name">' + escHtml(t.name) + '</div>' +
+                '<div class="top3-rationale">' + escHtml(t.rationale) + '</div>' +
+              '</div>' +
+            '</li>';
+          }).join('');
+          top3Html = '<div class="top3-section">' +
+            '<div class="top3-heading">Top 3 Priorities</div>' +
+            '<ul class="top3-list">' + top3Items + '</ul>' +
+          '</div>';
+        }
+
         var card = document.getElementById('card-experts');
-        card.innerHTML =
-          '<div class="card-title">Senior Advisors</div>' +
-          '<ul class="expert-list">' + expItems + '</ul>';
+        card.innerHTML = '<div class="card-title">Senior Advisors</div>' + bucketsHtml + top3Html;
 
         expertsSectionEl.hidden = false;
         setTimeout(function () { card.classList.add('visible'); }, 50);
-
-        // Hide the CTA now that advisors are shown
         advisorsCtaEl.hidden = true;
       }
 
