@@ -545,6 +545,47 @@
     }
     #change-key-btn:hover { color: var(--gold); }
 
+    /* ── Rate limit toast ──────────────────────────── */
+    #rate-toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1e2f47;
+      border: 1px solid rgba(201, 168, 76, 0.35);
+      border-radius: var(--radius);
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      z-index: 50;
+      min-width: 280px;
+    }
+    #rate-toast[hidden] { display: none; }
+    #rate-toast-icon {
+      font-size: 1.4rem;
+      line-height: 1;
+    }
+    #rate-toast-body { flex: 1; }
+    #rate-toast-title {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 0.2rem;
+    }
+    #rate-toast-sub {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.5);
+    }
+    #rate-toast-countdown {
+      font-family: var(--font-serif);
+      font-size: 1.6rem;
+      color: var(--gold);
+      min-width: 2.5rem;
+      text-align: right;
+    }
+
     @media (max-width: 600px) {
       #input-row { flex-direction: column; }
     }
@@ -637,6 +678,16 @@
       <button id="change-key-btn">Change API key</button>
     </footer>
 
+  </div>
+
+  <!-- Rate limit countdown toast -->
+  <div id="rate-toast" hidden role="status">
+    <div id="rate-toast-icon">⏳</div>
+    <div id="rate-toast-body">
+      <div id="rate-toast-title">Rate limit reached</div>
+      <div id="rate-toast-sub">Ready to retry in</div>
+    </div>
+    <div id="rate-toast-countdown">—</div>
   </div>
 
   <script>
@@ -832,7 +883,7 @@
 
           renderStep1(parsed);
         } catch (err) {
-          showFormError(err.message || 'Something went wrong. Please try again.');
+          if (err.message !== '__ratelimit__') showFormError(err.message || 'Something went wrong. Please try again.');
         } finally {
           setLoading(false);
         }
@@ -866,9 +917,8 @@
           var parsed = parseResponse(data, ['experts']);
           renderStep2(parsed);
         } catch (err) {
-          showFormError(err.message || 'Something went wrong. Please try again.');
-          advisorsCtaEl.hidden = false;
-          findAdvisorsBtn.disabled = false;
+          if (err.message !== '__ratelimit__') showFormError(err.message || 'Something went wrong. Please try again.');
+          if (err.message !== '__ratelimit__') { advisorsCtaEl.hidden = false; findAdvisorsBtn.disabled = false; }
         } finally {
           setLoading(false);
         }
@@ -1054,7 +1104,12 @@
           console.error('Anthropic API error', res.status, JSON.stringify(errBody, null, 2));
           var msg = (errBody && errBody.error && errBody.error.message) || '';
           if (res.status === 401) throw new Error('Invalid API key. Click \u201cChange API key\u201d to update it.');
-          if (res.status === 429) throw new Error('Rate limit reached. Please wait a moment and try again.');
+          if (res.status === 429) {
+            var retryAfter = parseInt(res.headers.get('retry-after') || '60', 10);
+            if (isNaN(retryAfter) || retryAfter <= 0) retryAfter = 60;
+            startRateLimitCountdown(retryAfter);
+            throw new Error('__ratelimit__');
+          }
           throw new Error(msg || ('API error ' + res.status + '. Please try again.'));
         }
 
@@ -1093,6 +1148,33 @@
           }
         }
         return parsed;
+      }
+
+      /* ── Rate limit countdown ──────────────────── */
+      var _countdownTimer = null;
+
+      function startRateLimitCountdown(seconds) {
+        var toast     = document.getElementById('rate-toast');
+        var countdown = document.getElementById('rate-toast-countdown');
+        var remaining = seconds;
+
+        if (_countdownTimer) clearInterval(_countdownTimer);
+        countdown.textContent = remaining + 's';
+        toast.hidden = false;
+
+        _countdownTimer = setInterval(function () {
+          remaining -= 1;
+          countdown.textContent = remaining + 's';
+          if (remaining <= 0) {
+            clearInterval(_countdownTimer);
+            _countdownTimer = null;
+            toast.hidden = true;
+            // Re-enable buttons so the user can retry immediately
+            analyzeBtn.disabled = false;
+            findAdvisorsBtn.disabled = false;
+            analyzeBtn.textContent = 'Analyze';
+          }
+        }, 1000);
       }
 
       function tryParse(str) {
