@@ -641,84 +641,41 @@
       var LS_KEY      = 'pe_anthropic_key';
       var EMBEDDED_KEY = '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'; // embedded key
 
-      /* ── System prompts ────────────────────────── */
-      var PROMPT_STEP1 = [
-        'You are an expert private equity research analyst. When given a company website URL:',
-        '1. Use web_search to research the company thoroughly — product, market, business model, size, and competitive landscape.',
-        '2. Return ONLY a valid JSON object with this exact structure (no markdown fences, no text outside the JSON):',
+      /* ── System prompt ─────────────────────────── */
+      var PROMPT_COMBINED = [
+        'You are an expert private equity research analyst and advisor sourcing specialist.',
+        'When given a company website URL, use web_search extensively to research the company and find real named individuals.',
+        '',
+        'Complete all of the following in a single pass:',
+        '1. Research the company — product, market, business model, size, and competitive landscape.',
+        '2. Identify 3-5 direct competitors (head-to-head) and 3-5 broader comparables (similar but differ in at least one meaningful dimension).',
+        '3. Find current executives at the target company: CEO, CRO, CFO, COO, CMO, and VP-level leaders.',
+        '4. Find former senior employees (C-suite, VP, Director-level) who have since left the target.',
+        '5. For each direct competitor and broader comparable, find at least 2 current senior operators and 2 former senior operators. Also include independent sector experts.',
+        '',
+        'Do not invent names or roles. If you cannot verify individuals, return an empty array for that bucket.',
+        '',
+        'Return ONLY a valid JSON object (no markdown fences, no text outside the JSON):',
         '{',
         '  "industry": "<short label, e.g. B2B SaaS / HR Tech>",',
         '  "snapshot": "<3-4 sentence investment-grade description of business model, market position, size, and traction>",',
         '  "direct_competitors": [',
-        '    {"name": "<company name>", "description": "<one sentence: how they compete head-to-head with the target>"},',
-        '    ...',
+        '    {"name": "<company name>", "description": "<one sentence: how they compete head-to-head with the target>"}',
         '  ],',
         '  "broader_comparables": [',
-        '    {"name": "<company name>", "description": "<one sentence: similar in X but differs from target in Y dimension>"},',
-        '    ...',
-        '  ]',
-        '}',
-        'Include 3-5 companies per list.',
-        'direct_competitors: companies that go head-to-head offering the same products and services to the same customers.',
-        'broader_comparables: companies that offer similar services to similar customers but differ in at least one meaningful dimension (geography, vertical, delivery model, price point, etc.).',
-        'Descriptions must explain the relationship to the target company specifically.',
-        'Do not include any text outside the JSON object.'
-      ].join('\n');
-
-      var PROMPT_STEP2 = [
-        'You are an expert advisor sourcing analyst for a private equity firm. Your job is to find real, named individuals who could advise the firm on a potential investment.',
-        '',
-        'You will receive: the target company URL, its sectors and snapshot, its direct competitors, and its broader comparable universe.',
-        '',
-        'Use web_search extensively to find real people. Do not invent names or roles.',
-        'If you cannot find verified individuals for a bucket, return an empty array for that bucket.',
-        '',
-        'Search across three buckets and return each as a separate array:',
-        '',
-        'BUCKET 1 — Current Executives at the Target Company',
-        'Find the current CEO, CRO, CFO, COO, CMO, and VP-level leaders at the target company.',
-        'For each: name, exact title, and tenure in this role (e.g. "4 years (since 2021)").',
-        '',
-        'BUCKET 2 — Former Senior Employees of the Target Company',
-        'Find ex-employees who have left the target and are now reachable externally.',
-        'Prioritise C-suite, VP, and Director-level profiles.',
-        'For each: name, most senior role held at the target, tenure at target (e.g. "2017–2022"), and current position.',
-        '',
-        'BUCKET 3 — Senior Experts from the Competitive Universe',
-        'Cover BOTH the direct competitors list AND the broader competitive universe list.',
-        'For each company in either list, find at least 2 CURRENT senior operators (C-suite or VP-level still at that company) AND at least 2 FORMER senior operators (who have since left).',
-        'In addition, search for sector-level experts who have NOT worked at any of the listed companies but have deep domain expertise in the relevant sectors. These could be consultants, investors, advisors, or operators known for work in these sectors.',
-        'For each person: include which company or sector they are associated with, their current role, and a note on whether they are a current employee, former employee, or independent sector expert.',
-        '',
-        'Return ONLY a valid JSON object (no markdown fences, no text outside the JSON):',
-        '{',
+        '    {"name": "<company name>", "description": "<one sentence: similar in X but differs from target in Y>"}',
+        '  ],',
         '  "current_executives": [',
-        '    {',
-        '      "name": "full name",',
-        '      "title": "exact title",',
-        '      "tenure": "4 years (since 2021)",',
-        '      "relevance": "1 sentence on what they know"',
-        '    }',
+        '    {"name": "full name", "title": "exact title", "tenure": "4 years (since 2021)", "relevance": "1 sentence on what they know"}',
         '  ],',
         '  "former_employees": [',
-        '    {',
-        '      "name": "full name",',
-        '      "last_role": "most senior role at target company",',
-        '      "tenure_at_target": "2017–2022",',
-        '      "current_position": "current title and company",',
-        '      "relevance": "1 sentence on what they know"',
-        '    }',
+        '    {"name": "full name", "last_role": "most senior role at target", "tenure_at_target": "2017-2022", "current_position": "current title and company", "relevance": "1 sentence"}',
         '  ],',
         '  "broader_experts": [',
-        '    {',
-        '      "name": "full name",',
-        '      "role": "current title and affiliation",',
-        '      "type": "current" | "former" | "sector expert",',
-        '      "associated_company": "company name from the competitor/comparable lists, or the relevant sector if a sector expert",',
-        '      "relevance": "1 sentence on what they bring"',
-        '    }',
+        '    {"name": "full name", "role": "current title and affiliation", "type": "current|former|sector expert", "associated_company": "company name or sector", "relevance": "1 sentence"}',
         '  ]',
-        '}'
+        '}',
+        'Do not include any text outside the JSON object.'
       ].join('\n');
 
       /* ── State ─────────────────────────────────── */
@@ -726,7 +683,6 @@
       var broaderComparables = [];  // [{name, description}]
       var sectors            = [];  // string[]
       var currentUrl         = '';
-      var currentSnapshot    = '';
 
       /* ── DOM references ────────────────────────── */
       var modalOverlay    = document.getElementById('modal-overlay');
@@ -747,7 +703,7 @@
       function init() {
         var savedKey;
         try { savedKey = localStorage.getItem(LS_KEY); } catch (e) { savedKey = null; }
-        if (!savedKey && EMBEDDED_KEY === '__ANTHROPIC_API_KEY__') showModal();
+        if (!getKey()) showModal();
 
         modalSaveBtn.addEventListener('click', handleSaveKey);
         keyInput.addEventListener('keydown', function (e) {
@@ -843,7 +799,7 @@
       function showModalError(msg) { modalError.textContent = msg; modalError.hidden = false; }
       function hideModalError()    { modalError.hidden = true; }
 
-      /* ── Analyze company + find advisors ──────── */
+      /* ── Analyze company + find advisors (single call) ── */
       async function handleStep1Submit(e) {
         e.preventDefault();
         var url    = urlInput.value.trim();
@@ -854,49 +810,18 @@
         currentUrl = url;
         hideFormError();
         resetResults();
+        setLoading(true, 'Researching company and sourcing advisors\u2026');
 
-        // Step 1: research the company
-        setLoading(true, 'Researching company\u2026');
         try {
-          var data   = await callClaude(PROMPT_STEP1, 'Analyze this company: ' + url, apiKey);
-          var parsed = parseResponse(data, ['industry', 'snapshot', 'direct_competitors', 'broader_comparables']);
+          var data   = await callClaude(PROMPT_COMBINED, 'Analyze this company: ' + url, apiKey);
+          var parsed = parseResponse(data, ['industry', 'snapshot', 'direct_competitors', 'broader_comparables', 'current_executives', 'former_employees', 'broader_experts']);
 
           sectors            = parsed.industry.split(/[\/,]/).map(function (s) { return s.trim(); }).filter(Boolean);
-          currentSnapshot    = parsed.snapshot;
           directCompetitors  = parsed.direct_competitors.slice();
           broaderComparables = parsed.broader_comparables.slice();
 
           renderStep1(parsed);
-        } catch (err) {
-          if (err.message !== '__ratelimit__') showFormError(err.message || 'Something went wrong. Please try again.');
-          setLoading(false);
-          return;
-        }
-
-        // Step 2: find senior advisors automatically
-        setLoading(true, 'Sourcing senior advisors\u2026');
-        try {
-          var userMsg = [
-            'Target company: ' + currentUrl,
-            'Sectors: ' + sectors.join(', '),
-            'Snapshot: ' + currentSnapshot,
-            '',
-            'Direct competitors:',
-            directCompetitors.map(function (c) {
-              return '- ' + c.name + (c.description ? ': ' + c.description : '');
-            }).join('\n'),
-            '',
-            'Broader comparable universe:',
-            broaderComparables.map(function (c) {
-              return '- ' + c.name + (c.description ? ': ' + c.description : '');
-            }).join('\n'),
-            '',
-            'Please find: (1) current executives with tenure, (2) former senior employees, (3) senior experts from the broader comparable universe.'
-          ].join('\n');
-
-          var data2   = await callClaude(PROMPT_STEP2, userMsg, apiKey);
-          var parsed2 = parseResponse(data2, ['current_executives', 'former_employees', 'broader_experts']);
-          renderStep2(parsed2);
+          renderStep2(parsed);
         } catch (err) {
           if (err.message !== '__ratelimit__') showFormError(err.message || 'Something went wrong. Please try again.');
         } finally {
