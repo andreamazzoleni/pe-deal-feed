@@ -993,7 +993,7 @@
       /* ── API call ──────────────────────────────── */
       async function callClaude(systemPrompt, userMessage, apiKey) {
         var messages = [{ role: 'user', content: userMessage }];
-        var MAX_TURNS = 12; // safety ceiling for web_search loops
+        var MAX_TURNS = 30; // safety ceiling for web_search loops
 
         for (var turn = 0; turn < MAX_TURNS; turn++) {
           var body = {
