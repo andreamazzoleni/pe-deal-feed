@@ -415,25 +415,6 @@
     }
     .add-comp-btn:hover { background: var(--navy-light); }
 
-    /* ── Find Advisors CTA ─────────────────────────── */
-    #advisors-cta { margin-top: 0.25rem; }
-    #advisors-cta[hidden] { display: none; }
-    #find-advisors-btn {
-      width: 100%;
-      padding: 1rem 1.5rem;
-      background: var(--gold);
-      color: var(--navy);
-      border: none;
-      border-radius: var(--radius);
-      font-size: 1rem;
-      font-weight: 600;
-      letter-spacing: 0.01em;
-      transition: background var(--transition), transform 60ms;
-    }
-    #find-advisors-btn:hover:not(:disabled)  { background: var(--gold-hover); }
-    #find-advisors-btn:active:not(:disabled) { transform: scale(0.98); }
-    #find-advisors-btn:disabled { opacity: 0.55; cursor: not-allowed; }
-
     /* ── Experts section ───────────────────────────── */
     #experts-section {
       display: flex;
@@ -626,11 +607,6 @@
         <div id="card-broader-comparables" class="card"></div>
       </section>
 
-      <!-- Find Advisors CTA -->
-      <div id="advisors-cta" hidden>
-        <button id="find-advisors-btn">Find Senior Advisors &rarr;</button>
-      </div>
-
       <!-- Step 2 results: 3 advisor cards -->
       <section id="experts-section" hidden aria-live="polite">
         <div id="card-current-execs"    class="card"></div>
@@ -764,8 +740,6 @@
       var loadingEl       = document.getElementById('loading');
       var loadingText     = document.getElementById('loading-text');
       var resultsEl       = document.getElementById('results');
-      var advisorsCtaEl   = document.getElementById('advisors-cta');
-      var findAdvisorsBtn = document.getElementById('find-advisors-btn');
       var expertsSectionEl= document.getElementById('experts-section');
       var changeKeyBtn    = document.getElementById('change-key-btn');
 
@@ -780,7 +754,6 @@
           if (e.key === 'Enter') handleSaveKey();
         });
         analyzeForm.addEventListener('submit', handleStep1Submit);
-        findAdvisorsBtn.addEventListener('click', handleStep2Submit);
         changeKeyBtn.addEventListener('click', showModal);
 
         // Event delegation for sector tags
@@ -870,7 +843,7 @@
       function showModalError(msg) { modalError.textContent = msg; modalError.hidden = false; }
       function hideModalError()    { modalError.hidden = true; }
 
-      /* ── Step 1: Analyze company ───────────────── */
+      /* ── Analyze company + find advisors ──────── */
       async function handleStep1Submit(e) {
         e.preventDefault();
         var url    = urlInput.value.trim();
@@ -879,10 +852,11 @@
         if (!apiKey) { showModal(); return; }
 
         currentUrl = url;
-        setLoading(true, 'Researching company\u2026');
         hideFormError();
         resetResults();
 
+        // Step 1: research the company
+        setLoading(true, 'Researching company\u2026');
         try {
           var data   = await callClaude(PROMPT_STEP1, 'Analyze this company: ' + url, apiKey);
           var parsed = parseResponse(data, ['industry', 'snapshot', 'direct_competitors', 'broader_comparables']);
@@ -895,49 +869,36 @@
           renderStep1(parsed);
         } catch (err) {
           if (err.message !== '__ratelimit__') showFormError(err.message || 'Something went wrong. Please try again.');
-        } finally {
           setLoading(false);
+          return;
         }
-      }
 
-      /* ── Step 2: Find advisors ─────────────────── */
-      async function handleStep2Submit() {
-        var apiKey = getKey();
-        if (!apiKey) { showModal(); return; }
-
+        // Step 2: find senior advisors automatically
         setLoading(true, 'Sourcing senior advisors\u2026');
-        hideFormError();
-        expertsSectionEl.hidden = true;
-        ['card-current-execs', 'card-former-employees', 'card-broader-experts'].forEach(function (id) {
-          var el = document.getElementById(id);
-          if (el) el.classList.remove('visible');
-        });
-
-        var userMsg = [
-          'Target company: ' + currentUrl,
-          'Sectors: ' + sectors.join(', '),
-          'Snapshot: ' + currentSnapshot,
-          '',
-          'Direct competitors:',
-          directCompetitors.map(function (c) {
-            return '- ' + c.name + (c.description ? ': ' + c.description : '');
-          }).join('\n'),
-          '',
-          'Broader comparable universe:',
-          broaderComparables.map(function (c) {
-            return '- ' + c.name + (c.description ? ': ' + c.description : '');
-          }).join('\n'),
-          '',
-          'Please find: (1) current executives with tenure, (2) former senior employees, (3) senior experts from the broader comparable universe.'
-        ].join('\n');
-
         try {
-          var data   = await callClaude(PROMPT_STEP2, userMsg, apiKey);
-          var parsed = parseResponse(data, ['current_executives', 'former_employees', 'broader_experts']);
-          renderStep2(parsed);
+          var userMsg = [
+            'Target company: ' + currentUrl,
+            'Sectors: ' + sectors.join(', '),
+            'Snapshot: ' + currentSnapshot,
+            '',
+            'Direct competitors:',
+            directCompetitors.map(function (c) {
+              return '- ' + c.name + (c.description ? ': ' + c.description : '');
+            }).join('\n'),
+            '',
+            'Broader comparable universe:',
+            broaderComparables.map(function (c) {
+              return '- ' + c.name + (c.description ? ': ' + c.description : '');
+            }).join('\n'),
+            '',
+            'Please find: (1) current executives with tenure, (2) former senior employees, (3) senior experts from the broader comparable universe.'
+          ].join('\n');
+
+          var data2   = await callClaude(PROMPT_STEP2, userMsg, apiKey);
+          var parsed2 = parseResponse(data2, ['current_executives', 'former_employees', 'broader_experts']);
+          renderStep2(parsed2);
         } catch (err) {
           if (err.message !== '__ratelimit__') showFormError(err.message || 'Something went wrong. Please try again.');
-          if (err.message !== '__ratelimit__') { advisorsCtaEl.hidden = false; findAdvisorsBtn.disabled = false; }
         } finally {
           setLoading(false);
         }
@@ -955,7 +916,6 @@
         renderBroaderComparables();
 
         resultsEl.hidden = false;
-        advisorsCtaEl.hidden = false;
 
         var cards = resultsEl.querySelectorAll('.card');
         cards.forEach(function (card, i) {
@@ -1089,13 +1049,11 @@
             if (el) el.classList.add('visible');
           }, 50 + i * 150);
         });
-        advisorsCtaEl.hidden = true;
       }
 
       /* ── Reset ─────────────────────────────────── */
       function resetResults() {
         resultsEl.hidden = true;
-        advisorsCtaEl.hidden = true;
         expertsSectionEl.hidden = true;
         resultsEl.querySelectorAll('.card').forEach(function (c) { c.classList.remove('visible'); });
         ['card-current-execs', 'card-former-employees', 'card-broader-experts'].forEach(function (id) {
@@ -1117,7 +1075,7 @@
             model:      MODEL,
             max_tokens: MAX_TOKENS,
             system:     systemPrompt,
-            tools:      [{ type: 'web_search_20250305', name: 'web_search' }],
+            tools:      [{ type: 'web_search_20260209', name: 'web_search' }],
             messages:   messages
           };
 
@@ -1155,6 +1113,14 @@
           var data = await res.json();
 
           // Claude is done — return the final response
+          if (data.stop_reason === 'end_turn' || data.stop_reason === 'stop_sequence' || data.stop_reason === 'max_tokens') return data;
+
+          // Server-side tool loop hit its iteration limit — re-submit to continue
+          if (data.stop_reason === 'pause_turn') {
+            messages.push({ role: 'assistant', content: data.content });
+            continue;
+          }
+
           if (data.stop_reason !== 'tool_use') return data;
 
           // Claude called web_search — add its turn to the conversation and loop
@@ -1235,7 +1201,6 @@
             _countdownTimer = null;
             toast.hidden = true;
             analyzeBtn.disabled = false;
-            findAdvisorsBtn.disabled = false;
             analyzeBtn.textContent = 'Analyze';
           }
         }, 1000);
@@ -1254,7 +1219,6 @@
         loadingEl.hidden = !on;
         if (on && text) loadingText.textContent = text;
         analyzeBtn.disabled = on;
-        findAdvisorsBtn.disabled = on;
         analyzeBtn.textContent = on ? 'Analyzing\u2026' : 'Analyze';
       }
 
