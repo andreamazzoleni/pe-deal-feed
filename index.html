@@ -1055,11 +1055,15 @@
           var toolResults = [];
           for (var i = 0; i < data.content.length; i++) {
             if (data.content[i].type === 'tool_use') {
-              toolResults.push({
+              var result = {
                 type:        'tool_result',
                 tool_use_id: data.content[i].id,
-                content:     []   // web_search is a hosted tool; Anthropic provides results
-              });
+                content:     []
+              };
+              if (data.content[i].container_id) {
+                result.container_id = data.content[i].container_id;
+              }
+              toolResults.push(result);
             }
           }
           if (toolResults.length === 0) return data; // unexpected — bail out safely
